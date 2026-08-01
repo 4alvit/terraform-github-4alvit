@@ -51,6 +51,11 @@ output "repositories" {
       html_url = github_repository.home_assistant.html_url
       ssh_url  = github_repository.home_assistant.ssh_clone_url
     }
+    iot_project_builder_profile = {
+      name     = github_repository.iot_project_builder_profile.name
+      html_url = github_repository.iot_project_builder_profile.html_url
+      ssh_url  = github_repository.iot_project_builder_profile.ssh_clone_url
+    }
   }
 }
 

@@ -384,6 +384,42 @@ resource "github_repository_dependabot_security_updates" "terraform_github_4alvi
   enabled    = true
 }
 
+# iot-project-builder-profile (transferred from victron-venus org)
+resource "github_repository" "iot_project_builder_profile" {
+  name        = "iot-project-builder-profile"
+  description = "Automated engineering profile generator for IoT developers based on GitHub activity"
+  visibility  = "public"
+
+  has_issues      = true
+  has_projects    = true
+  has_wiki        = true
+  has_discussions = false
+
+  allow_merge_commit = true
+  allow_squash_merge = true
+  allow_rebase_merge = true
+  allow_auto_merge   = true
+
+  delete_branch_on_merge = true
+
+  topics = [
+    "engineering-profile", "esp32", "esphome", "github-api", "iot",
+    "llm", "profile-generator", "python"
+  ]
+
+  license_template = "mit"
+}
+
+resource "github_repository_vulnerability_alerts" "iot_project_builder_profile" {
+  repository = github_repository.iot_project_builder_profile.name
+  depends_on = [github_repository.iot_project_builder_profile]
+}
+
+resource "github_repository_dependabot_security_updates" "iot_project_builder_profile" {
+  repository = github_repository.iot_project_builder_profile.id
+  enabled    = true
+}
+
 # =============================================================================
 # Import Blocks (for existing repos)
 # =============================================================================
@@ -429,6 +465,10 @@ import {
   to = github_repository.home_assistant
   id = "home-assistant"
 }
+import {
+  to = github_repository.iot_project_builder_profile
+  id = "iot-project-builder-profile"
+}
 
 # Vulnerability alerts
 import {
@@ -459,6 +499,10 @@ import {
   to = github_repository_vulnerability_alerts.dbus_service_template
   id = "dbus-service-template"
 }
+import {
+  to = github_repository_vulnerability_alerts.iot_project_builder_profile
+  id = "iot-project-builder-profile"
+}
 
 # Dependabot security updates
 import {
@@ -488,4 +532,8 @@ import {
 import {
   to = github_repository_dependabot_security_updates.dbus_service_template
   id = "dbus-service-template"
+}
+import {
+  to = github_repository_dependabot_security_updates.iot_project_builder_profile
+  id = "iot-project-builder-profile"
 }
