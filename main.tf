@@ -135,7 +135,7 @@ resource "github_repository_dependabot_security_updates" "solar_forecast_langgra
 
 resource "github_repository" "mqtt_observability_opentelemetry" {
   name        = "mqtt-observability-opentelemetry"
-  description = "OpenTelemetry/Prometheus for Venus OS — D-Bus event tracing, inverter metrics, distributed tracing. Observability-first reference implementation bridging inverter-monitoring and deep tracing; enables debugging D-Bus call chains across MQTT → D-Bus → inverter-control pipeline."
+  description = "Complete OpenTelemetry observability stack for MQTT-based IoT systems — MQTT message interception with W3C trace context propagation, Mosquitto broker metrics exporter, topic-based span processing, and Grafana/Jaeger/Prometheus visualization. Ready-to-run Docker Compose stack for Venus OS and IoT deployments."
   visibility  = "public"
 
   has_issues      = true
@@ -151,7 +151,7 @@ resource "github_repository" "mqtt_observability_opentelemetry" {
   delete_branch_on_merge = true
 
   topics = [
-    "cerbo-gx", "dbus", "distributed-tracing", "grafana", "mqtt",
+    "docker", "grafana", "iot", "jaeger", "mqtt", "mqtt-interceptor",
     "observability", "opentelemetry", "prometheus", "python", "tempo",
     "venus-os", "victron"
   ]
