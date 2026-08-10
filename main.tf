@@ -141,7 +141,7 @@ resource "github_repository" "mqtt_observability_opentelemetry" {
   has_issues      = true
   has_projects    = true
   has_wiki        = true
-  has_discussions = false
+  has_discussions = true
 
   allow_merge_commit = true
   allow_squash_merge = true
