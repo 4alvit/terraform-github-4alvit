@@ -537,3 +537,81 @@ import {
   to = github_repository_dependabot_security_updates.iot_project_builder_profile
   id = "iot-project-builder-profile"
 }
+
+# =============================================================================
+# Branch Protection Rulesets
+# =============================================================================
+
+data "github_app" "gitar" {
+  slug = "gitar-bot"
+}
+
+locals {
+  protected_repos = [
+    "energy-data-rag-pipeline",
+    "mcp-venus-os",
+    "solar-forecast-langgraph",
+    "mqtt-observability-opentelemetry",
+    "esphome-ble-sensor-patterns",
+    "fastapi-mqtt-gateway",
+    "dbus-service-template",
+    "terraform-github-victron",
+    "4alvit",
+    "terraform-github-4alvit",
+  ]
+}
+
+resource "github_repository_ruleset" "default" {
+  for_each    = toset(local.protected_repos)
+  name        = "Default"
+  repository  = each.value
+  target      = "branch"
+  enforcement = "active"
+
+  bypass_actors {
+    actor_id    = 5
+    actor_type  = "RepositoryRole"
+    bypass_mode = "always"
+  }
+
+  bypass_actors {
+    actor_id    = data.github_app.gitar.id
+    actor_type  = "Integration"
+    bypass_mode = "always"
+  }
+
+  conditions {
+    ref_name {
+      include = ["~DEFAULT_BRANCH"]
+      exclude = []
+    }
+  }
+
+  rules {
+    deletion            = true
+    non_fast_forward    = true
+    required_signatures = true
+
+    copilot_code_review {
+      review_draft_pull_requests = true
+      review_on_push             = true
+    }
+
+    pull_request {
+      allowed_merge_methods             = ["merge", "squash", "rebase"]
+      dismiss_stale_reviews_on_push     = false
+      require_code_owner_review         = true
+      require_last_push_approval        = true
+      required_approving_review_count   = 1
+      required_review_thread_resolution = true
+    }
+
+    required_code_scanning {
+      required_code_scanning_tool {
+        alerts_threshold          = "errors"
+        security_alerts_threshold = "high_or_higher"
+        tool                      = "CodeQL"
+      }
+    }
+  }
+}
