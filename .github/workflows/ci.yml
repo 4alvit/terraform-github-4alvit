@@ -1,0 +1,19 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  ci:
+    name: Terraform CI
+    uses: victron-venus/venus-os-ci-toolkit/.github/workflows/terraform-ci.yml@875762362bb31b4899bf02fdf9e835188dc5eb80
+    with:
+      working-directory: '.'
+    secrets:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
