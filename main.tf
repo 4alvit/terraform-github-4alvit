@@ -63,7 +63,7 @@ resource "github_repository_dependabot_security_updates" "energy_data_rag_pipeli
   enabled    = true
 }
 
-resource "github_pages" "iot_project_builder_profile" {
+resource "github_repository_pages" "iot_project_builder_profile" {
   repository = github_repository.iot_project_builder_profile.name
   source {
     branch = "main"
@@ -428,13 +428,6 @@ resource "github_repository_dependabot_security_updates" "iot_project_builder_pr
   enabled    = true
 }
 
-resource "github_pages" "iot_project_builder_profile" {
-  repository = github_repository.iot_project_builder_profile.name
-  source {
-    branch = "main"
-    path   = "/docs"
-  }
-}
 
 # =============================================================================
 # Import Blocks (for existing repos)
