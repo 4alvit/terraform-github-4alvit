@@ -63,6 +63,14 @@ resource "github_repository_dependabot_security_updates" "energy_data_rag_pipeli
   enabled    = true
 }
 
+resource "github_pages" "iot_project_builder_profile" {
+  repository = github_repository.iot_project_builder_profile.name
+  source {
+    branch = "main"
+    path   = "/docs"
+  }
+}
+
 resource "github_repository" "mcp_venus_os" {
   name        = "mcp-venus-os"
   description = "MCP server for Venus OS management - D-Bus, MQTT, and safety-constrained control"
@@ -418,6 +426,14 @@ resource "github_repository_vulnerability_alerts" "iot_project_builder_profile" 
 resource "github_repository_dependabot_security_updates" "iot_project_builder_profile" {
   repository = github_repository.iot_project_builder_profile.id
   enabled    = true
+}
+
+resource "github_pages" "iot_project_builder_profile" {
+  repository = github_repository.iot_project_builder_profile.name
+  source {
+    branch = "main"
+    path   = "/docs"
+  }
 }
 
 # =============================================================================
