@@ -212,6 +212,15 @@ locals {
       ]
     },
 
+    demo = {
+      name             = "demo"
+      description      = "Private Graphify indexing sandbox"
+      visibility       = "private"
+      has_wiki         = false
+      license_template = ""
+      topics           = ["graphify"]
+    },
+
     terraform_github_4alvit = {
       name        = "terraform-github-4alvit"
       description = "Terraform IaC for 4alvit personal GitHub account infrastructure"
