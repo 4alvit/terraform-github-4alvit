@@ -8,13 +8,6 @@ terraform {
       name = "github-4alvit-infrastructure"
     }
   }
-
-  required_providers {
-    github = {
-      source  = "integrations/github"
-      version = "~> 6.0"
-    }
-  }
 }
 
 provider "github" {
@@ -23,87 +16,9 @@ provider "github" {
 }
 
 # =============================================================================
-# Relocate existing flat resources into module.repos
-# =============================================================================
-
-moved {
-  from = github_repository.energy_data_rag_pipeline
-  to   = module.repos["energy_data_rag_pipeline"].github_repository.this
-}
-
-
-
-moved {
-  from = github_repository.mcp_venus_os
-  to   = module.repos["mcp_venus_os"].github_repository.this
-}
-
-
-
-moved {
-  from = github_repository.solar_forecast_langgraph
-  to   = module.repos["solar_forecast_langgraph"].github_repository.this
-}
-
-
-
-moved {
-  from = github_repository.mqtt_observability_opentelemetry
-  to   = module.repos["mqtt_observability_opentelemetry"].github_repository.this
-}
-
-
-
-moved {
-  from = github_repository.esphome_ble_sensor_patterns
-  to   = module.repos["esphome_ble_sensor_patterns"].github_repository.this
-}
-
-
-
-moved {
-  from = github_repository.fastapi_mqtt_gateway
-  to   = module.repos["fastapi_mqtt_gateway"].github_repository.this
-}
-
-
-
-moved {
-  from = github_repository.dbus_service_template
-  to   = module.repos["dbus_service_template"].github_repository.this
-}
-
-
-
-moved {
-  from = github_repository.profile_4alvit
-  to   = module.repos["profile_4alvit"].github_repository.this
-}
-
-moved {
-  from = github_repository.terraform_github_victron
-  to   = module.repos["terraform_github_victron"].github_repository.this
-}
-
-moved {
-  from = github_repository.home_assistant
-  to   = module.repos["home_assistant"].github_repository.this
-}
-
-moved {
-  from = github_repository.terraform_github_4alvit
-  to   = module.repos["terraform_github_4alvit"].github_repository.this
-}
-
-
-
-moved {
-  from = github_repository.iot_project_builder_profile
-  to   = module.repos["iot_project_builder_profile"].github_repository.this
-}
-
-
-
+# Relocate existing flat resources into module.repos.
+# The github provider does not support `moved {}` across resource types, so
+# re-associate state manually with `terraform state mv`:
 # =============================================================================
 # Repository definitions
 # =============================================================================
@@ -200,15 +115,6 @@ locals {
       topics = [
         "github", "hcp-terraform", "iac", "infrastructure-as-code",
         "terraform", "victron", "victron-venus"
-      ]
-    },
-
-    home_assistant = {
-      name        = "home-assistant"
-      description = "Home Assistant configuration"
-      visibility  = "private"
-      topics = [
-        "home-assistant", "home-automation", "yaml"
       ]
     },
 

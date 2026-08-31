@@ -94,5 +94,15 @@ resource "github_repository" "this" {
 }
 
 output "repository" {
-  value = github_repository.this
+  # Expose only the fields callers use. Exporting the full resource forces
+  # Terraform to read every computed attribute, including the deprecated
+  # `default_branch`. The provider now warns on that read and points users
+  # at `github_branch_default` — we don't need the default branch here, so
+  # we just stop asking for it.
+  value = {
+    name          = github_repository.this.name
+    id            = github_repository.this.id
+    html_url      = github_repository.this.html_url
+    ssh_clone_url = github_repository.this.ssh_clone_url
+  }
 }

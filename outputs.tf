@@ -14,3 +14,7 @@ output "organization_url" {
   description = "User/organization URL"
   value       = "https://github.com/${var.github_organization}"
 }
+
+output "check_org" {
+  value = "-->${var.github_organization}<--"
+}

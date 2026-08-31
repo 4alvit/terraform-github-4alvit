@@ -1,7 +1,6 @@
 variable "github_organization" {
-  description = "GitHub organization / user name (e.g., 4alvit)"
+  description = "GitHub organization / user name"
   type        = string
-  default     = "4alvit"
 }
 
 variable "github_token" {
