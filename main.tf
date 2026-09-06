@@ -2,7 +2,7 @@ terraform {
   required_version = ">= 1.15.7"
 
   cloud {
-    organization = "alvit"
+    organization = "victron-venus"
 
     workspaces {
       name = "github-4alvit-infrastructure"
