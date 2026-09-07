@@ -29,6 +29,7 @@ Set these in Terraform Cloud workspace variables:
 - `terraform-github-victron` - Terraform for victron-venus org
 - `home-assistant` - Home Assistant config (private)
 - `github-deploy-webhook` - GitHub deploy webhook + CF Tunnel (private; Cerbo/Synology/Portainer)
+- `k3s-self-healing` - Private k3s home cluster provisioning (h5/h7/h8, IRC eggdrop/psybnc/znc)
 
 ### Security (per repository)
 - Vulnerability alerts (`github_repository_vulnerability_alerts`)
