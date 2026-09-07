@@ -150,6 +150,18 @@ locals {
       ]
     },
 
+
+    terraform_portainer_synology = {
+      name             = "terraform-portainer-synology"
+      description      = "Terraform for Synology Docker stacks via Portainer — import and manage containers"
+      visibility       = "private"
+      has_wiki         = false
+      license_template = ""
+      topics = [
+        "docker", "iac", "portainer", "synology", "terraform", "victron"
+      ]
+    },
+
     iot_project_builder_profile = {
       name        = "iot-project-builder-profile"
       description = "Automated engineering profile generator for IoT developers based on GitHub activity"
