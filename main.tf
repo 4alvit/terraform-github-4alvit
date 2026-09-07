@@ -138,9 +138,9 @@ locals {
     },
 
 
-    github_webhook_cf = {
-      name             = "github-webhook-cf"
-      description      = "GitHub deploy webhook + Cloudflare Tunnel ingress — Cerbo/Synology/Portainer release orchestration (extracted from inverter-monitoring)"
+    github_deploy_webhook = {
+      name             = "github-deploy-webhook"
+      description      = "GitHub deploy webhook for Cerbo/Synology/Portainer releases (+ Cloudflare Tunnel ingress; extracted from inverter-monitoring)"
       visibility       = "private"
       has_wiki         = false
       license_template = ""
@@ -227,8 +227,8 @@ resource "github_repository_vulnerability_alerts" "iot_project_builder_profile" 
   repository = module.repos["iot_project_builder_profile"].repository.name
 }
 
-resource "github_repository_vulnerability_alerts" "github_webhook_cf" {
-  repository = module.repos["github_webhook_cf"].repository.name
+resource "github_repository_vulnerability_alerts" "github_deploy_webhook" {
+  repository = module.repos["github_deploy_webhook"].repository.name
 }
 
 resource "github_repository_dependabot_security_updates" "energy_data_rag_pipeline" {
@@ -276,8 +276,8 @@ resource "github_repository_dependabot_security_updates" "iot_project_builder_pr
   enabled    = true
 }
 
-resource "github_repository_dependabot_security_updates" "github_webhook_cf" {
-  repository = module.repos["github_webhook_cf"].repository.id
+resource "github_repository_dependabot_security_updates" "github_deploy_webhook" {
+  repository = module.repos["github_deploy_webhook"].repository.id
   enabled    = true
 }
 
