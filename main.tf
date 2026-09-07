@@ -137,6 +137,19 @@ locals {
       ]
     },
 
+
+    github_deploy_webhook = {
+      name             = "github-deploy-webhook"
+      description      = "GitHub deploy webhook for Cerbo/Synology/Portainer releases (+ Cloudflare Tunnel ingress; extracted from inverter-monitoring)"
+      visibility       = "private"
+      has_wiki         = false
+      license_template = ""
+      topics = [
+        "cloudflare", "cloudflare-tunnel", "deploy", "docker", "github-webhook",
+        "portainer", "python", "synology", "victron", "webhook"
+      ]
+    },
+
     iot_project_builder_profile = {
       name        = "iot-project-builder-profile"
       description = "Automated engineering profile generator for IoT developers based on GitHub activity"
@@ -214,6 +227,10 @@ resource "github_repository_vulnerability_alerts" "iot_project_builder_profile" 
   repository = module.repos["iot_project_builder_profile"].repository.name
 }
 
+resource "github_repository_vulnerability_alerts" "github_deploy_webhook" {
+  repository = module.repos["github_deploy_webhook"].repository.name
+}
+
 resource "github_repository_dependabot_security_updates" "energy_data_rag_pipeline" {
   repository = module.repos["energy_data_rag_pipeline"].repository.id
   enabled    = true
@@ -256,6 +273,11 @@ resource "github_repository_dependabot_security_updates" "terraform_github_4alvi
 
 resource "github_repository_dependabot_security_updates" "iot_project_builder_profile" {
   repository = module.repos["iot_project_builder_profile"].repository.id
+  enabled    = true
+}
+
+resource "github_repository_dependabot_security_updates" "github_deploy_webhook" {
+  repository = module.repos["github_deploy_webhook"].repository.id
   enabled    = true
 }
 
