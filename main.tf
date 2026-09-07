@@ -138,6 +138,19 @@ locals {
     },
 
 
+
+    k3s_self_healing = {
+      name             = "k3s-self-healing"
+      description      = "Private k3s home cluster provisioning — nodes h5/h7/h8, Longhorn notes, IRC eggdrop/psybnc/znc manifests"
+      visibility       = "private"
+      has_wiki         = false
+      license_template = ""
+      topics = [
+        "eggdrop", "irc", "k3s", "kubernetes", "longhorn",
+        "psybnc", "self-hosted", "znc"
+      ]
+    },
+
     github_deploy_webhook = {
       name             = "github-deploy-webhook"
       description      = "GitHub deploy webhook for Cerbo/Synology/Portainer releases (+ Cloudflare Tunnel ingress; extracted from inverter-monitoring)"
@@ -157,6 +170,7 @@ locals {
       visibility       = "private"
       has_wiki         = false
       license_template = ""
+      allow_auto_merge = false
       topics = [
         "docker", "iac", "portainer", "synology", "terraform", "victron"
       ]
@@ -186,6 +200,8 @@ module "repos" {
   has_projects    = try(each.value.has_projects, true)
   has_wiki        = try(each.value.has_wiki, true)
   has_discussions = try(each.value.has_discussions, false)
+
+  allow_auto_merge = try(each.value.allow_auto_merge, true)
 
   topics           = each.value.topics
   license_template = try(each.value.license_template, "mit")
@@ -239,6 +255,11 @@ resource "github_repository_vulnerability_alerts" "iot_project_builder_profile" 
   repository = module.repos["iot_project_builder_profile"].repository.name
 }
 
+
+resource "github_repository_vulnerability_alerts" "k3s_self_healing" {
+  repository = module.repos["k3s_self_healing"].repository.name
+}
+
 resource "github_repository_vulnerability_alerts" "github_deploy_webhook" {
   repository = module.repos["github_deploy_webhook"].repository.name
 }
@@ -285,6 +306,12 @@ resource "github_repository_dependabot_security_updates" "terraform_github_4alvi
 
 resource "github_repository_dependabot_security_updates" "iot_project_builder_profile" {
   repository = module.repos["iot_project_builder_profile"].repository.id
+  enabled    = true
+}
+
+
+resource "github_repository_dependabot_security_updates" "k3s_self_healing" {
+  repository = module.repos["k3s_self_healing"].repository.id
   enabled    = true
 }
 
