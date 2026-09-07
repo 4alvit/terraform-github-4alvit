@@ -28,6 +28,7 @@ Set these in Terraform Cloud workspace variables:
 - `4alvit` - GitHub profile repo
 - `terraform-github-victron` - Terraform for victron-venus org
 - `home-assistant` - Home Assistant config (private)
+- `github-webhook-cf` - GitHub deploy webhook + CF Tunnel (private; Cerbo/Synology/Portainer)
 
 ### Security (per repository)
 - Vulnerability alerts (`github_repository_vulnerability_alerts`)
