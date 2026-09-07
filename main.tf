@@ -176,6 +176,18 @@ locals {
       ]
     },
 
+    terraform_oracle_oci = {
+      name             = "terraform-oracle-oci"
+      description      = "Terraform for Oracle Cloud (OCI) home lab — VCN, security list, instances h5/h7/h8, k3s networking"
+      visibility       = "private"
+      has_wiki         = false
+      license_template = ""
+      allow_auto_merge = false
+      topics = [
+        "iac", "k3s", "networking", "oci", "oracle-cloud", "terraform"
+      ]
+    },
+
     iot_project_builder_profile = {
       name        = "iot-project-builder-profile"
       description = "Automated engineering profile generator for IoT developers based on GitHub activity"
@@ -264,6 +276,10 @@ resource "github_repository_vulnerability_alerts" "github_deploy_webhook" {
   repository = module.repos["github_deploy_webhook"].repository.name
 }
 
+resource "github_repository_vulnerability_alerts" "terraform_oracle_oci" {
+  repository = module.repos["terraform_oracle_oci"].repository.name
+}
+
 resource "github_repository_dependabot_security_updates" "energy_data_rag_pipeline" {
   repository = module.repos["energy_data_rag_pipeline"].repository.id
   enabled    = true
@@ -317,6 +333,11 @@ resource "github_repository_dependabot_security_updates" "k3s_self_healing" {
 
 resource "github_repository_dependabot_security_updates" "github_deploy_webhook" {
   repository = module.repos["github_deploy_webhook"].repository.id
+  enabled    = true
+}
+
+resource "github_repository_dependabot_security_updates" "terraform_oracle_oci" {
+  repository = module.repos["terraform_oracle_oci"].repository.id
   enabled    = true
 }
 
