@@ -139,6 +139,20 @@ locals {
 
 
 
+
+    home_assistant_k3s = {
+      name             = "home-assistant-k3s"
+      description      = "Private HA Supervised→k3s migration — pajikos Helm Core + companion Mosquitto/ESPHome/Ring"
+      visibility       = "private"
+      has_wiki         = false
+      license_template = ""
+      allow_auto_merge = false
+      topics = [
+        "home-assistant", "helm", "k3s", "kubernetes", "pajikos",
+        "self-hosted", "mqtt", "esphome"
+      ]
+    },
+
     k3s_self_healing = {
       name             = "k3s-self-healing"
       description      = "Private k3s home cluster provisioning — nodes h5/h7/h8, Longhorn notes, IRC eggdrop/psybnc/znc manifests"
@@ -280,6 +294,12 @@ resource "github_repository_vulnerability_alerts" "terraform_oracle_oci" {
   repository = module.repos["terraform_oracle_oci"].repository.name
 }
 
+
+resource "github_repository_vulnerability_alerts" "home_assistant_k3s" {
+  repository = module.repos["home_assistant_k3s"].repository.name
+}
+
+
 resource "github_repository_dependabot_security_updates" "energy_data_rag_pipeline" {
   repository = module.repos["energy_data_rag_pipeline"].repository.id
   enabled    = true
@@ -340,6 +360,13 @@ resource "github_repository_dependabot_security_updates" "terraform_oracle_oci" 
   repository = module.repos["terraform_oracle_oci"].repository.id
   enabled    = true
 }
+
+resource "github_repository_dependabot_security_updates" "home_assistant_k3s" {
+  repository = module.repos["home_assistant_k3s"].repository.id
+  enabled    = true
+}
+
+
 
 resource "github_repository_pages" "iot_project_builder_profile" {
   repository = module.repos["iot_project_builder_profile"].repository.name
@@ -421,4 +448,10 @@ resource "github_repository_ruleset" "default" {
       }
     }
   }
+}
+
+# Adopt the repo created via gh before this was in Terraform.
+import {
+  to = module.repos["home_assistant_k3s"].github_repository.this
+  id = "home-assistant-k3s"
 }

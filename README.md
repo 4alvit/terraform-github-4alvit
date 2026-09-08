@@ -30,6 +30,7 @@ Set these in Terraform Cloud workspace variables:
 - `home-assistant` - Home Assistant config (private)
 - `github-deploy-webhook` - GitHub deploy webhook + CF Tunnel (private; Cerbo/Synology/Portainer)
 - `k3s-self-healing` - Private k3s home cluster provisioning (h5/h7/h8, IRC eggdrop/psybnc/znc)
+- `home-assistant-k3s` - Private HA Supervised→k3s migration (pajikos Helm + companions)
 - `terraform-portainer-synology` - Terraform for Synology Docker stacks via Portainer (private)
 - `terraform-oracle-oci` - Terraform for Oracle Cloud home lab (VCN, SL, h5/h7/h8) (private)
 
