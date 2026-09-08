@@ -449,9 +449,3 @@ resource "github_repository_ruleset" "default" {
     }
   }
 }
-
-# Adopt the repo created via gh before this was in Terraform.
-import {
-  to = module.repos["home_assistant_k3s"].github_repository.this
-  id = "home-assistant-k3s"
-}
