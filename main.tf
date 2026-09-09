@@ -205,7 +205,7 @@ locals {
 
     terraform_cloudflare_alvit = {
       name             = "terraform-cloudflare-alvit"
-      description      = "Terraform for personal Cloudflare (free) account — zones/DNS/Access/tunnels; uses TF_VAR_*_xyz, not Roku token"
+      description      = "Terraform for personal Cloudflare free account — zones, DNS, Access, tunnels"
       visibility       = "private"
       has_wiki         = false
       license_template = ""
