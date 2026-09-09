@@ -215,6 +215,18 @@ locals {
       ]
     },
 
+    terraform_synology_alvit = {
+      name             = "terraform-synology-alvit"
+      description      = "Terraform for Synology DSM (DS620slim) — packages, File Station, tasks; Docker via Portainer TF"
+      visibility       = "private"
+      has_wiki         = false
+      license_template = ""
+      allow_auto_merge = false
+      topics = [
+        "dsm", "iac", "synology", "terraform"
+      ]
+    },
+
     iot_project_builder_profile = {
       name        = "iot-project-builder-profile"
       description = "Automated engineering profile generator for IoT developers based on GitHub activity"
