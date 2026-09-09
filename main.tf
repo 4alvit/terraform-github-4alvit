@@ -202,6 +202,19 @@ locals {
       ]
     },
 
+
+    terraform_cloudflare_alvit = {
+      name             = "terraform-cloudflare-alvit"
+      description      = "Terraform for personal Cloudflare (free) account — zones/DNS/Access/tunnels; uses TF_VAR_*_xyz, not Roku token"
+      visibility       = "private"
+      has_wiki         = false
+      license_template = ""
+      allow_auto_merge = false
+      topics = [
+        "cloudflare", "dns", "iac", "terraform", "zero-trust"
+      ]
+    },
+
     iot_project_builder_profile = {
       name        = "iot-project-builder-profile"
       description = "Automated engineering profile generator for IoT developers based on GitHub activity"
@@ -295,6 +308,12 @@ resource "github_repository_vulnerability_alerts" "terraform_oracle_oci" {
 }
 
 
+resource "github_repository_vulnerability_alerts" "terraform_cloudflare_alvit" {
+  repository = module.repos["terraform_cloudflare_alvit"].repository.name
+}
+
+
+
 resource "github_repository_vulnerability_alerts" "home_assistant_k3s" {
   repository = module.repos["home_assistant_k3s"].repository.name
 }
@@ -360,6 +379,13 @@ resource "github_repository_dependabot_security_updates" "terraform_oracle_oci" 
   repository = module.repos["terraform_oracle_oci"].repository.id
   enabled    = true
 }
+
+
+resource "github_repository_dependabot_security_updates" "terraform_cloudflare_alvit" {
+  repository = module.repos["terraform_cloudflare_alvit"].repository.id
+  enabled    = true
+}
+
 
 resource "github_repository_dependabot_security_updates" "home_assistant_k3s" {
   repository = module.repos["home_assistant_k3s"].repository.id
