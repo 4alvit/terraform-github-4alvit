@@ -236,6 +236,24 @@ locals {
         "llm", "profile-generator", "python"
       ]
     },
+
+    amazon_echo_home_voice = {
+      name        = "amazon-echo-home-voice"
+      description = "Home Assistant voice control via Amazon Echo (Alexa as mic; HA/Matter as hub)"
+      visibility  = "public"
+      topics = [
+        "alexa", "amazon-echo", "home-assistant", "iot", "matter", "voice"
+      ]
+    },
+
+    google_home_voice_stats = {
+      name        = "google-home-voice-stats"
+      description = "Home Assistant voice stats via Google Home (Google as mic; HA as hub)"
+      visibility  = "public"
+      topics = [
+        "google-home", "home-assistant", "iot", "stats", "voice"
+      ]
+    },
   }
 }
 
@@ -331,6 +349,16 @@ resource "github_repository_vulnerability_alerts" "home_assistant_k3s" {
 }
 
 
+resource "github_repository_vulnerability_alerts" "amazon_echo_home_voice" {
+  repository = module.repos["amazon_echo_home_voice"].repository.name
+}
+
+resource "github_repository_vulnerability_alerts" "google_home_voice_stats" {
+  repository = module.repos["google_home_voice_stats"].repository.name
+}
+
+
+
 resource "github_repository_dependabot_security_updates" "energy_data_rag_pipeline" {
   repository = module.repos["energy_data_rag_pipeline"].repository.id
   enabled    = true
@@ -403,6 +431,18 @@ resource "github_repository_dependabot_security_updates" "home_assistant_k3s" {
   repository = module.repos["home_assistant_k3s"].repository.id
   enabled    = true
 }
+
+
+resource "github_repository_dependabot_security_updates" "amazon_echo_home_voice" {
+  repository = module.repos["amazon_echo_home_voice"].repository.id
+  enabled    = true
+}
+
+resource "github_repository_dependabot_security_updates" "google_home_voice_stats" {
+  repository = module.repos["google_home_voice_stats"].repository.id
+  enabled    = true
+}
+
 
 
 

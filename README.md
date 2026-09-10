@@ -34,6 +34,8 @@ Set these in Terraform Cloud workspace variables:
 - `terraform-portainer-synology` - Terraform for Synology Docker stacks via Portainer (private)
 - `terraform-oracle-oci` - Terraform for Oracle Cloud home lab (VCN, SL, h5/h7/h8) (private)
 - `terraform-cloudflare-alvit` - Terraform for personal Cloudflare free account (zones, DNS, Access, tunnels) (private)
+- `amazon-echo-home-voice` - Home Assistant voice control via Amazon Echo (public)
+- `google-home-voice-stats` - Home Assistant voice stats via Google Home (public)
 
 ### Security (per repository)
 - Vulnerability alerts (`github_repository_vulnerability_alerts`)
