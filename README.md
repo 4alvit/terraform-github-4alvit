@@ -2,6 +2,12 @@
 
 Terraform IaC for **4alvit** personal GitHub account infrastructure.
 
+<!-- ci-release-process:start -->
+## CI and deployment
+
+See [CI and deployment workflow](docs/release-workflow.md) for required checks and local commands. This repository uses validation-only policy; application release channels do not apply.
+<!-- ci-release-process:end -->
+
 ## Workspace
 
 This project uses HCP Terraform (Terraform Cloud) with workspace: `github-4alvit-infrastructure`
