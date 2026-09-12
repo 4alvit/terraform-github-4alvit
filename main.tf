@@ -527,3 +527,23 @@ resource "github_repository_ruleset" "default" {
     }
   }
 }
+
+# Keep the approved automation account's repository access in desired state.
+# These repositories already exist; this resource only manages collaborator access.
+resource "github_repository_collaborator" "automation_bot" {
+  for_each = toset([
+    "4alvit",
+    "amazon-echo-home-voice",
+    "demo",
+    "google-home-voice-stats",
+    "home-assistant-k3s",
+    "k3s-self-healing",
+    "terraform-cloudflare-alvit",
+    "terraform-oracle-oci",
+    "terraform-synology-alvit",
+  ])
+
+  repository = each.value
+  username   = "californiantiramisu"
+  permission = "push"
+}
