@@ -137,6 +137,27 @@ locals {
       ]
     },
 
+    terraform_github_open_ott_play = {
+      name             = "terraform-github-open-ott-play"
+      description      = "Terraform IaC for open-ott-play GitHub organization infrastructure"
+      visibility       = "public"
+      license_template = ""
+      topics = [
+        "github", "hcp-terraform", "iac", "infrastructure-as-code",
+        "open-ott-play", "terraform"
+      ]
+    },
+
+    home_assistant = {
+      name             = "home-assistant"
+      description      = "Home Assistant configuration"
+      visibility       = "private"
+      has_wiki         = false
+      allow_auto_merge = false
+      license_template = ""
+      topics           = ["home-assistant", "home-automation", "yaml"]
+    },
+
 
 
 
@@ -470,6 +491,8 @@ locals {
     "terraform-github-victron",
     "4alvit",
     "terraform-github-4alvit",
+    "iot-project-builder-profile",
+    "terraform-github-open-ott-play",
   ]
 }
 
@@ -486,10 +509,14 @@ resource "github_repository_ruleset" "default" {
     bypass_mode = "always"
   }
 
-  bypass_actors {
-    actor_id    = data.github_app.gitar.id
-    actor_type  = "Integration"
-    bypass_mode = "always"
+  # Preserve existing actor grants when importing the two manually created rulesets.
+  dynamic "bypass_actors" {
+    for_each = contains(["iot-project-builder-profile", "terraform-github-open-ott-play"], each.value) ? [] : [data.github_app.gitar.id]
+    content {
+      actor_id    = bypass_actors.value
+      actor_type  = "Integration"
+      bypass_mode = "always"
+    }
   }
 
   conditions {
@@ -534,12 +561,25 @@ resource "github_repository_collaborator" "automation_bot" {
   for_each = toset([
     "4alvit",
     "amazon-echo-home-voice",
+    "dbus-service-template",
     "demo",
+    "energy-data-rag-pipeline",
+    "esphome-ble-sensor-patterns",
+    "fastapi-mqtt-gateway",
+    "github-deploy-webhook",
     "google-home-voice-stats",
     "home-assistant-k3s",
+    "iot-project-builder-profile",
     "k3s-self-healing",
+    "mcp-venus-os",
+    "mqtt-observability-opentelemetry",
+    "solar-forecast-langgraph",
     "terraform-cloudflare-alvit",
+    "terraform-github-4alvit",
+    "terraform-github-open-ott-play",
+    "terraform-github-victron",
     "terraform-oracle-oci",
+    "terraform-portainer-synology",
     "terraform-synology-alvit",
   ])
 

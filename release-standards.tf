@@ -67,6 +67,14 @@ resource "github_repository_ruleset" "release_quality_gate" {
   repository  = each.value
   target      = "branch"
   enforcement = "active"
+
+  # Administrators retain the same permanent merge override as the Default ruleset.
+  bypass_actors {
+    actor_id    = 5
+    actor_type  = "RepositoryRole"
+    bypass_mode = "always"
+  }
+
   conditions {
     ref_name {
       include = ["~DEFAULT_BRANCH"]
@@ -119,7 +127,7 @@ resource "github_repository_environment" "release_standard" {
   # Single-maintainer workflow: the owner may request and approve a promotion.
   # Team deployments can change this to true after adding a second reviewer.
   prevent_self_review = false
-  # Release approval is mandatory even for repository administrators.
+  # Release approval remains required unless administrator bypass is separately authorized.
   can_admins_bypass = each.value.environment == "release" ? false : null
   reviewers {
     users = [tonumber(data.github_user.release_reviewer[0].id)]

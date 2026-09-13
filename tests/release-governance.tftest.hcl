@@ -1,4 +1,11 @@
 # Every run is a plan against a mocked provider in a disposable standalone copy.
+variables {
+  portainer_actions_endpoint_id = "1"
+  portainer_actions_url         = "https://portainer.example.invalid"
+  portainer_push_webhook_url    = "https://webhook.example.invalid/webhook"
+  portainer_push_webhook_secret = "mock-only-hmac-fixture"
+}
+
 mock_provider "github" {
   override_during = plan
   mock_data "github_repository" {
@@ -49,6 +56,18 @@ run "public_protections_keep_publication_disabled" {
       github_repository_environment_deployment_policy.release_standard["app/release"].branch_pattern == "main"
     )
     error_message = "Keep required owner approval without administrator bypass and the default-branch-only policy."
+  }
+  assert {
+    condition = alltrue([
+      for gate in github_repository_ruleset.release_quality_gate : (
+        one(gate.bypass_actors).actor_id == 5 &&
+        one(gate.bypass_actors).actor_type == "RepositoryRole" &&
+        one(gate.bypass_actors).bypass_mode == "always" &&
+        one(one(gate.rules).required_status_checks).strict_required_status_checks_policy &&
+        one(one(one(gate.rules).required_status_checks).required_check).context == "CI gate"
+      )
+    ])
+    error_message = "Every release branch gate must allow permanent administrator bypass while retaining strict CI checks for other contributors."
   }
 }
 
