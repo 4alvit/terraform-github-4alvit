@@ -23,7 +23,7 @@ __pycache__/
 *.py[cod]
 
 # Reviewed non-secret release governance inputs.
-!activation/public-release.tfvars.json
+!release-activation.auto.tfvars.json
 !examples/release-standard.tfvars.json
 
 # Saved plans can contain sensitive values.
