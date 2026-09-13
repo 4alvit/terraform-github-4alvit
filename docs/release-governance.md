@@ -14,6 +14,20 @@ reviewer environment or ruleset to run its local validation and OSS scanners.
 No billing, subscription or Advanced Security feature is enabled by this module.
 Existing public security/review configuration stays in place.
 
+## Administrator merge policy
+
+Every managed branch ruleset grants repository administrators (`RepositoryRole`,
+actor ID `5`) permanent `always` bypass. This includes the additive `CI gate`
+ruleset: an administrator can explicitly merge a PR while checks or reviews are
+pending. Other contributors still follow the strict required CI and review rules.
+The policy lives in Terraform and must remain present after every apply.
+
+This workspace manages the `4alvit` account. Organization repositories use their
+own canonical workspaces in `terraform-github-victron` and
+`terraform-github-open-ott-play`; the same branch policy must be defined there.
+Existing rulesets must be imported into their owning workspace before adoption,
+so each GitHub resource has one Terraform state owner.
+
 `RELEASE_CHANNELS_ENABLED` remains a separate ordinary Actions variable, controlled
 by `release_publication_enabled_repositories`; it uses the same live public-visibility
 filter as the protections. Enabled repositories must also be declared release
@@ -63,7 +77,8 @@ terraform plan \
 Targeting is limited to this additive rollout because the canonical workspaces also
 manage unrelated repositories and organization settings. Reject deletes,
 replacements, private targets, unrelated resource changes, or existing protections
-that would be weakened. If an intended environment/ruleset/variable already exists
+that would be weakened beyond the documented permanent administrator bypass.
+If an intended environment/ruleset/variable already exists
 outside canonical state, inspect it and review its import before changing it; do
 not create a second state owner. The saved plan may contain sensitive values and
 must remain local and uncommitted. Recheck live visibility and default branches
@@ -90,3 +105,14 @@ Release-only hooks remain disabled; shared hooks retain their unrelated event
 subscriptions. Hook URLs, secrets, configuration and private receiver repositories
 are deliberately outside this manifest. Candidate publication must not trigger
 production deployment; stable deployment remains a separate explicit operation.
+
+## Full reconciliation
+
+After importing existing infrastructure and applying the reviewed administrator
+policy, run an **unrestricted** plan in the canonical HCP workspace. A targeted
+plan alone does not prove the absence of drift. Require `terraform plan
+-detailed-exitcode` to return zero and `No changes`; review any existing objects
+missing from state using [the ownership inventory](infrastructure-ownership.md).
+Keep idempotent import blocks in version control. Do not suppress discrepancies
+with new `ignore_changes`, delete existing resources to satisfy a plan, or move
+resources into a second state.
