@@ -127,8 +127,8 @@ resource "github_repository_environment" "release_standard" {
   # Single-maintainer workflow: the owner may request and approve a promotion.
   # Team deployments can change this to true after adding a second reviewer.
   prevent_self_review = false
-  # Release approval remains required unless administrator bypass is separately authorized.
-  can_admins_bypass = each.value.environment == "release" ? false : null
+  # The owner keeps administrator bypass enabled for release approvals.
+  can_admins_bypass = each.value.environment == "release" ? true : null
   reviewers {
     users = [tonumber(data.github_user.release_reviewer[0].id)]
   }
