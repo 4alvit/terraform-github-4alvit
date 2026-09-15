@@ -5,9 +5,11 @@ resource "github_repository_vulnerability_alerts" "robinhood" {
   enabled    = true
 }
 
+# Automatic Dependabot updater jobs cannot run on this ARM64-only runner.
+# Dependency auditing and update validation run in the application's self-hosted CI.
 resource "github_repository_dependabot_security_updates" "robinhood" {
   repository = module.repos["robinhood"].repository.id
-  enabled    = true
+  enabled    = false
 
   depends_on = [github_repository_vulnerability_alerts.robinhood]
 }
