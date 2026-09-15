@@ -118,6 +118,15 @@ locals {
       ]
     },
 
+    robinhood = {
+      name             = "robinhood"
+      description      = "Private Robinhood MCP server for account analytics and controlled trading"
+      visibility       = "private"
+      has_wiki         = false
+      license_template = ""
+      topics           = ["mcp", "python", "robinhood"]
+    },
+
     demo = {
       name             = "demo"
       description      = "Private Graphify indexing sandbox"

@@ -43,6 +43,8 @@ Set these in Terraform Cloud workspace variables:
 - `amazon-echo-home-voice` - Home Assistant voice control via Amazon Echo (public)
 - `google-home-voice-stats` - Home Assistant voice stats via Google Home (public)
 
+- `robinhood` - Private Robinhood MCP server for account analytics and controlled trading; dedicated self-hosted CI runner
+
 ### Security (per repository)
 - Vulnerability alerts (`github_repository_vulnerability_alerts`)
 - Dependabot security updates (`github_repository_dependabot_security_updates`)
