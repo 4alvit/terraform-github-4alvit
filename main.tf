@@ -146,6 +146,19 @@ locals {
       ]
     },
 
+    terraform_github_ha_homelab = {
+      name             = "terraform-github-ha-homelab"
+      description      = "Terraform IaC for the ha-homelab GitHub organization, executed in HCP Terraform"
+      visibility       = "public"
+      has_projects     = false
+      has_wiki         = false
+      allow_auto_merge = false
+      license_template = ""
+      topics = [
+        "github", "hcp-terraform", "home-assistant", "homelab", "iac", "terraform"
+      ]
+    },
+
     terraform_github_open_ott_play = {
       name             = "terraform-github-open-ott-play"
       description      = "Terraform IaC for open-ott-play GitHub organization infrastructure"
