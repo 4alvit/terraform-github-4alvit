@@ -1,7 +1,8 @@
 # Infrastructure ownership
 
 This configuration and the canonical HCP Terraform workspace
-`github-4alvit-infrastructure` own adopted resources under the `4alvit` account.
+`alvit-infrastructure/github-4alvit-infrastructure` own adopted resources under
+the `4alvit` account.
 The organization workspaces own their respective organization resources; the
 personal repositories containing that Terraform code still belong here.
 An empty plan covers resources represented in this state. It does not establish

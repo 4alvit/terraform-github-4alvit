@@ -10,7 +10,8 @@ See [CI and deployment workflow](docs/release-workflow.md) for required checks a
 
 ## Workspace
 
-This project uses HCP Terraform (Terraform Cloud) with workspace: `github-4alvit-infrastructure`
+This project uses the canonical HCP Terraform workspace
+`alvit-infrastructure/github-4alvit-infrastructure` for the personal GitHub account.
 
 ## Required Variables
 
@@ -57,48 +58,30 @@ terraform plan
 terraform apply
 ```
 
-### Running locally (disconnect from Terraform Cloud)
+### Canonical state and backend migration
 
-Use this when you want `terraform plan` / `apply` on your machine **without** HCP Terraform remote execution or remote state.
+Keep the `cloud {}` block attached to organization `alvit-infrastructure`,
+workspace `github-4alvit-infrastructure`. Every Git worktree uses this same
+canonical state. Do not detach the backend or create an independent state owner
+for experiments. Run `bash scripts/ci.sh` for validation without backend access.
 
-This repo’s `cloud {}` block in `main.tf` targets organization `victron-venus`, workspace `github-4alvit-infrastructure`.
+Existing checkouts may still have backend metadata for
+`victron-venus/github-4alvit-infrastructure`. Updating this source does not migrate
+remote state or sensitive workspace inputs. Before using the new backend, verify
+the protected state backup, destination state lineage and resource identities,
+and all workspace inputs, including the separate webhook credential and HMAC.
+Coordinate the handoff so only one workspace can apply changes, then reconcile
+each checkout's backend metadata with the verified destination. Do not initialize
+an empty destination and apply it as a new deployment.
 
-#### Temporary detach (recommended for experiments)
+After the handoff, an unrestricted `terraform plan -detailed-exitcode` must report
+no changes (exit code `0`). Retire the old workspace only after verifying the
+destination and preserving its rollback material. GitHub resources and the
+Portainer webhook receiver retain their existing identities and settings; see
+[infrastructure ownership](docs/infrastructure-ownership.md).
 
-1. Comment out the entire `cloud { ... }` block in `main.tf`.
-2. Clear the local backend cache from the repo root:
-   ```bash
-   rm -rf .terraform
-   ```
-3. Re-init (local state by default):
-   ```bash
-   terraform init
-   ```
-4. Provide variables locally — TFC workspace variables are **not** used when detached:
-   ```bash
-   cp terraform.tfvars.example terraform.tfvars   # if present; edit; gitignored
-   # or: export TF_VAR_github_token=...  TF_VAR_github_organization=4alvit
-   terraform plan
-   terraform apply
-   ```
-
-#### Keep existing remote state locally (optional)
-
-While still attached to TFC:
-
-```bash
-terraform state pull > terraform.tfstate
-```
-
-Then comment out `cloud {}` in `main.tf`, `rm -rf .terraform`, `terraform init`, and confirm with `terraform state list`. Keep `terraform.tfstate` **gitignored** — never commit it.
-
-#### Warnings
-
-- Do not apply from both TFC and local against the same resources without coordinating state (drift / conflicts).
-- To re-enable TFC: uncomment `cloud {}`, remove local `.terraform` (and local state if migrating back), then `terraform init`. Only `state push` / migrate if you know what you are doing.
-- Never commit credentials, `terraform.tfvars` with secrets, or state files.
-
-Requires Terraform ≥ 1.5 (HCP Terraform `cloud {}` block; not the old `backend "remote"` syntax).
+Never commit credentials, private variable files, saved plans, or state files.
+Requires Terraform ≥ 1.15.7.
 
 ## Import Existing Repos
 
