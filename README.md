@@ -12,6 +12,11 @@ See [CI and deployment workflow](docs/release-workflow.md) for required checks a
 
 This project uses the canonical HCP Terraform workspace
 `alvit-infrastructure/github-4alvit-infrastructure` for the personal GitHub account.
+The organization belongs to the separate HCP account `4alvit`. CLI operations need
+that account's API token, supplied through `TF_TOKEN_app_terraform_io` in the
+command environment. Load it from a private credential store or hidden input;
+do not put the token in command history or overwrite another account's default
+Terraform credentials. Membership of the original `alvit` account is not required.
 
 ## Required Variables
 
