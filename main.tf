@@ -25,6 +25,17 @@ provider "github" {
 
 locals {
   repositories = {
+    alvit_meet = {
+      name             = "alvit-meet"
+      description      = "Private home video calls with TCP/TLS media relay and automatic WAN DNS updates"
+      visibility       = "private"
+      has_projects     = false
+      has_wiki         = false
+      allow_auto_merge = false
+      license_template = ""
+      topics           = ["coturn", "homelab", "jitsi", "self-hosted", "synology", "webrtc"]
+    },
+
     energy_data_rag_pipeline = {
       name        = "energy-data-rag-pipeline"
       description = "RAG pipeline for Victron Energy documentation with pgvector, LangChain, and FastAPI"

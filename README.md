@@ -30,6 +30,7 @@ Set these in Terraform Cloud workspace variables:
 ## Managed Resources
 
 ### Repositories (All under 4alvit account)
+- `alvit-meet` - Private home video calls, TCP/TLS media relay, and WAN DNS updater integration
 - `energy-data-rag-pipeline` - RAG pipeline for Victron Energy docs
 - `mcp-venus-os` - MCP server for Venus OS management
 - `solar-forecast-langgraph` - LangGraph solar forecasting workflow
