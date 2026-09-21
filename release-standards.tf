@@ -67,14 +67,8 @@ resource "github_repository_ruleset" "release_quality_gate" {
   repository  = each.value
   target      = "branch"
   enforcement = "active"
-
-  # Administrators retain the same permanent merge override as the Default ruleset.
-  bypass_actors {
-    actor_id    = 5
-    actor_type  = "RepositoryRole"
-    bypass_mode = "always"
-  }
-
+  # CI failures must block every merge, including administrator dependency updates.
+  # Review and release-approval policies are configured independently.
   conditions {
     ref_name {
       include = ["~DEFAULT_BRANCH"]
