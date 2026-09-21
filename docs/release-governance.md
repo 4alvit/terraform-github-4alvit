@@ -14,13 +14,12 @@ reviewer environment or ruleset to run its local validation and OSS scanners.
 No billing, subscription or Advanced Security feature is enabled by this module.
 Existing public security/review configuration stays in place.
 
-## Administrator merge policy
+## Required CI for administrator merges
 
-Every managed branch ruleset grants repository administrators (`RepositoryRole`,
-actor ID `5`) permanent `always` bypass. This includes the additive `CI gate`
-ruleset: an administrator can explicitly merge a PR while checks or reviews are
-pending. Other contributors still follow the strict required CI and review rules.
-The policy lives in Terraform and must remain present after every apply.
+The additive `CI gate` ruleset has no bypass actors. Every contributor, including
+repository administrators, must wait for a successful gate on the current PR
+head. The separate default review ruleset and release-environment approval policy
+retain their existing administrator settings. Terraform preserves this boundary.
 
 This workspace manages the `4alvit` account. Organization repositories use their
 own canonical workspaces in `terraform-github-victron` and
@@ -78,7 +77,7 @@ terraform plan \
 Targeting is limited to this additive rollout because the canonical workspaces also
 manage unrelated repositories and organization settings. Reject deletes,
 replacements, private targets, unrelated resource changes, or existing protections
-that would be weakened beyond the documented permanent administrator bypass.
+that would be weakened, including any bypass of the required CI gate.
 If an intended environment/ruleset/variable already exists
 outside canonical state, inspect it and review its import before changing it; do
 not create a second state owner. The saved plan may contain sensitive values and
