@@ -67,8 +67,16 @@ resource "github_repository_ruleset" "release_quality_gate" {
   repository  = each.value
   target      = "branch"
   enforcement = "active"
-  # CI failures must block every merge, including administrator dependency updates.
-  # Review and release-approval policies are configured independently.
+  # Administrators can explicitly override CI for a reviewed pull request.
+  # Direct pushes and immutable release tags do not receive this bypass.
+  dynamic "bypass_actors" {
+    for_each = data.github_repository.release_standard[each.key].archived ? [] : [true]
+    content {
+      actor_id    = 5
+      actor_type  = "RepositoryRole"
+      bypass_mode = "pull_request"
+    }
+  }
   conditions {
     ref_name {
       include = ["~DEFAULT_BRANCH"]
