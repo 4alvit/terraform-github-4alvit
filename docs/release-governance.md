@@ -14,12 +14,14 @@ reviewer environment or ruleset to run its local validation and OSS scanners.
 No billing, subscription or Advanced Security feature is enabled by this module.
 Existing public security/review configuration stays in place.
 
-## Required CI for administrator merges
+## Administrator merge override
 
-The additive `CI gate` ruleset has no bypass actors. Every contributor, including
-repository administrators, must wait for a successful gate on the current PR
-head. The separate default review ruleset and release-environment approval policy
-retain their existing administrator settings. Terraform preserves this boundary.
+The additive `CI gate` ruleset grants repository administrators (role ID 5)
+a `pull_request` bypass on active public repositories. Administrators may
+explicitly override CI when merging a PR; ordinary merges still require a
+successful strict gate. This grant does not permit direct pushes and is not
+added to archived repositories. The separate default review ruleset and
+release-environment approval policy retain their existing settings.
 
 This workspace manages the `4alvit` account. Organization repositories use their
 own canonical workspaces in `terraform-github-victron` and
@@ -77,7 +79,7 @@ terraform plan \
 Targeting is limited to this additive rollout because the canonical workspaces also
 manage unrelated repositories and organization settings. Reject deletes,
 replacements, private targets, unrelated resource changes, or existing protections
-that would be weakened, including any bypass of the required CI gate.
+outside the explicitly reviewed administrator pull-request bypass policy.
 If an intended environment/ruleset/variable already exists
 outside canonical state, inspect it and review its import before changing it; do
 not create a second state owner. The saved plan may contain sensitive values and
@@ -85,7 +87,7 @@ must remain local and uncommitted. Recheck live visibility and default branches
 before activation. Changing the enabled-publication set is a separate reviewed
 plan after the release preconditions have passed.
 
-`bash scripts/ci.sh` also runs six plan-only Terraform contract tests against a
+`bash scripts/ci.sh` also runs plan-only Terraform contract tests against a
 mocked GitHub provider in a temporary copy with no backend or credentials. They
 exercise public opt-in, default-disabled publication, private exclusion, and
 rejection of private or undeclared publication targets. These tests never plan or
