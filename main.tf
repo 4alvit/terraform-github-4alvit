@@ -213,6 +213,8 @@ locals {
       visibility       = "private"
       has_wiki         = false
       license_template = ""
+      # Required checks run in the guarded local merge script for this private repo.
+      allow_auto_merge = false
       topics = [
         "eggdrop", "irc", "k3s", "kubernetes", "longhorn",
         "psybnc", "self-hosted", "znc"
