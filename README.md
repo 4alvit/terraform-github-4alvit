@@ -67,6 +67,15 @@ Set these in Terraform Cloud workspace variables:
 
 - `robinhood` - Private Robinhood MCP server for account analytics and controlled trading; dedicated self-hosted CI runner
 
+### Explicit organization repository exception
+
+- `victron-venus/inverter-climate` - Public energy-aware climate coordination via
+  Home Assistant and Victron. The owner explicitly requested management from this
+  repository. Its [independent stack](stacks/inverter-climate-repository/README.md)
+  uses the HCP workspace `victron-venus/github-inverter-climate-repository`, outside
+  the existing personal and organization states. See
+  [infrastructure ownership](docs/infrastructure-ownership.md).
+
 ### Security (per repository)
 - Vulnerability alerts (`github_repository_vulnerability_alerts`)
 - Dependabot security updates (`github_repository_dependabot_security_updates`)

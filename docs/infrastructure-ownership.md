@@ -5,6 +5,17 @@ This configuration and the canonical HCP Terraform workspace
 the `4alvit` account.
 The organization workspaces own their respective organization resources; the
 personal repositories containing that Terraform code still belong here.
+The explicit exception is the newly created public
+`victron-venus/inverter-climate` repository: at the owner's request,
+`stacks/inverter-climate-repository` manages that repository and its repository-level
+security, Actions permissions, and branch rules. This independent root uses the
+HCP workspace `victron-venus/github-inverter-climate-repository`, which is its sole
+state owner. It is separate from the top-level personal state and the existing
+`victron-venus/github-infrastructure` organization state. Do not also add it to
+either state; any future ownership change requires a coordinated state handoff.
+No existing resource is adopted or moved, no existing backend is changed, and no
+organization-wide setting is changed by this exception.
+
 An empty plan covers resources represented in this state. It does not establish
 that excluded objects or API-inaccessible protections have no drift.
 
