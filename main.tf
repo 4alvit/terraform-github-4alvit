@@ -258,19 +258,6 @@ locals {
       ]
     },
 
-    terraform_oracle_oci_alvit = {
-      name             = "terraform-oracle-oci-alvit"
-      description      = "Terraform for OCI Alvit Always Free infrastructure, site-to-site VPN, and k3s nodes"
-      visibility       = "private"
-      has_wiki         = false
-      license_template = ""
-      allow_auto_merge = false
-      topics = [
-        "iac", "k3s", "networking", "oci", "oracle-cloud", "terraform"
-      ]
-    },
-
-
     terraform_cloudflare_alvit = {
       name             = "terraform-cloudflare-alvit"
       description      = "Terraform for personal Cloudflare free account — zones, DNS, Access, tunnels"
