@@ -61,7 +61,7 @@ resource "github_repository_vulnerability_alerts" "climate" {
 
 resource "github_repository_dependabot_security_updates" "climate" {
   repository = github_repository.climate.id
-  enabled    = true
+  enabled    = false
 
   depends_on = [github_repository_vulnerability_alerts.climate]
 }
@@ -69,10 +69,10 @@ resource "github_repository_dependabot_security_updates" "climate" {
 resource "github_workflow_repository_permissions" "climate" {
   repository                       = github_repository.climate.name
   default_workflow_permissions     = "read"
-  can_approve_pull_request_reviews = false
+  can_approve_pull_request_reviews = true
 }
 
-# Required CI checks can be enabled after application workflows exist and pass.
+# The shared Quality gate workflow must be merged and green before applying.
 resource "github_repository_ruleset" "climate" {
   name        = "Protect main"
   repository  = github_repository.climate.name
@@ -82,7 +82,7 @@ resource "github_repository_ruleset" "climate" {
   bypass_actors {
     actor_id    = 5
     actor_type  = "RepositoryRole"
-    bypass_mode = "always"
+    bypass_mode = "pull_request"
   }
 
   conditions {
@@ -95,12 +95,77 @@ resource "github_repository_ruleset" "climate" {
   rules {
     deletion         = true
     non_fast_forward = true
+    required_status_checks {
+      strict_required_status_checks_policy = true
+      do_not_enforce_on_create             = false
+      required_check {
+        context        = "CI gate"
+        integration_id = 15368
+      }
+    }
     pull_request {
       allowed_merge_methods             = ["merge", "squash", "rebase"]
       required_approving_review_count   = 0
       required_review_thread_resolution = true
     }
   }
+}
+
+resource "github_repository_ruleset" "immutable_release_tags" {
+  name        = "Release standard - immutable version tags"
+  repository  = github_repository.climate.name
+  target      = "tag"
+  enforcement = "active"
+  conditions {
+    ref_name {
+      include = ["refs/tags/v*"]
+      exclude = []
+    }
+  }
+  rules {
+    deletion         = true
+    update           = true
+    non_fast_forward = true
+  }
+}
+
+resource "github_repository_environment" "release" {
+  repository          = github_repository.climate.name
+  environment         = "release"
+  prevent_self_review = false
+  can_admins_bypass   = true
+  reviewers {
+    users = [tonumber(data.github_user.authenticated.id)]
+  }
+  deployment_branch_policy {
+    protected_branches     = false
+    custom_branch_policies = true
+  }
+}
+
+resource "github_repository_environment_deployment_policy" "release" {
+  repository     = github_repository.climate.name
+  environment    = github_repository_environment.release.environment
+  branch_pattern = "main"
+}
+
+resource "github_actions_variable" "release_publication" {
+  repository    = github_repository.climate.name
+  variable_name = "RELEASE_CHANNELS_ENABLED"
+  value         = "true"
+  depends_on = [
+    github_repository_ruleset.climate,
+    github_repository_ruleset.immutable_release_tags,
+    github_repository_environment.release,
+    github_repository_environment_deployment_policy.release,
+  ]
+}
+
+resource "github_actions_variable" "setuphelper_publication" {
+  repository    = github_repository.climate.name
+  variable_name = "SETUPHELPER_PUBLICATION_ENABLED"
+  value         = "true"
+  depends_on    = [github_actions_variable.release_publication]
 }
 
 output "repository_url" {
