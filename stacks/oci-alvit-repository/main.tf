@@ -18,6 +18,9 @@ terraform {
 
 provider "github" {
   owner = "4alvit"
+  # Provider 6.x checks organization before GITHUB_OWNER or the owner attribute.
+  # Pin both to prevent inherited environment variables redirecting this stack.
+  organization = "4alvit"
 }
 
 data "github_user" "authenticated" {

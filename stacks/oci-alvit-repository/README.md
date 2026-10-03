@@ -13,9 +13,12 @@ to `4alvit`, which the configuration checks before creating the repository.
 
 Run Terraform from this directory. Load `GITHUB_TOKEN` from the existing private
 credential store into the process environment; never store it in source or
-Terraform variables. Clear `GITHUB_OWNER` and `GITHUB_ORGANIZATION` from that
-environment before running Terraform: provider 6.x allows these to override
-the configured owner. Also clear inherited `TF_CLI_ARGS*` overrides.
+Terraform variables. Both `owner` and the legacy `organization` provider argument
+are explicitly set to `4alvit`. Under the constrained provider 6.x this makes the
+repository owner independent of inherited `GITHUB_OWNER` and
+`GITHUB_ORGANIZATION` values.
+The legacy argument can be removed only after a provider major upgrade verifies
+configuration precedence. Clear inherited `TF_CLI_ARGS*` overrides.
 
 Initialize the backend and inspect a fresh, complete saved plan before applying
 that exact plan. The initial deployment must contain **3 creates, 0 changes,
@@ -26,4 +29,9 @@ plan after applying. `prevent_destroy` protects the repository while its resourc
 block remains in this configuration.
 
 From the repository root, `bash scripts/ci.sh` validates both Terraform roots
-using disposable directories with backend access disabled.
+using disposable directories with backend access disabled. Its owner regression
+runs the locked provider against a synthetic API on `127.0.0.1`: inherited owner
+and organization values must not redirect the effective owner. The data-only
+fixture has no managed resources, backend or real credentials. A negative control
+removing the legacy argument reproduces the original precedence bug. This is
+a local provider contract test, not a plan against GitHub or HCP infrastructure.
