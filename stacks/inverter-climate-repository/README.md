@@ -1,9 +1,9 @@
 # Inverter Climate repository
 
-This independent Terraform root owns exactly five resources for the new public
-`victron-venus/inverter-climate` repository: the repository, vulnerability alerts,
-Dependabot security updates, Actions token permissions, and the default-branch
-ruleset. The owner explicitly requested this source repository as its Terraform
+This independent Terraform root owns the public
+`victron-venus/inverter-climate` repository, vulnerability alerts, dependency
+update settings, Actions token permissions, branch/release rules, the protected
+release environment, and the release publication variables. The owner explicitly requested this source repository as its Terraform
 home. It does not adopt or move any existing personal or organization resources.
 
 Its sole state owner is
@@ -34,11 +34,19 @@ for this repository. Keep plans and plan JSON outside source control in a privat
 directory. A subsequent full plan must report no changes. The repository has
 `prevent_destroy` while its resource block remains present.
 
-The repository starts public with an MIT license, dependency security updates,
-read-only default Actions tokens, and no Actions ability to approve PR reviews.
-Its default branch rejects deletion and force pushes and requires resolved PR
-review threads, with an explicit administrator bypass for bootstrap and recovery.
-Required CI checks can be added after application workflows are merged and green.
+The repository is public with an MIT license, vulnerability alerts, read-only
+default Actions tokens, and narrowly enabled Actions PR approval. Renovate owns
+dependency updates through the shared organization preset and repository registry;
+Dependabot security PR generation is disabled. The default branch requires the
+shared `CI gate`, rejects deletion/force pushes, and requires resolved review
+threads. Version tags are immutable. Stable release jobs require the owner
+reviewing the `release` environment on `main`.
+
+Apply these release settings only after the shared Quality gate workflow is
+merged and green. `RELEASE_CHANNELS_ENABLED` enables verified release publication;
+`SETUPHELPER_PUBLICATION_ENABLED` allows the separately verified publisher to
+advance the artifact-only `latest` branch from stable release bytes. These
+workflows do not deploy to the device.
 
 From the source repository root, `bash scripts/ci.sh` validates all Terraform
 roots in disposable copies without backend access.
