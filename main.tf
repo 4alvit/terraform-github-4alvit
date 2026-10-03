@@ -258,7 +258,6 @@ locals {
       ]
     },
 
-
     terraform_cloudflare_alvit = {
       name             = "terraform-cloudflare-alvit"
       description      = "Terraform for personal Cloudflare free account — zones, DNS, Access, tunnels"

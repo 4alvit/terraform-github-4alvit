@@ -10,13 +10,27 @@ See [CI and deployment workflow](docs/release-workflow.md) for required checks a
 
 ## Workspace
 
+The new private `4alvit/terraform-oracle-oci-alvit` repository is managed by the
+independent [OCI Alvit repository stack](stacks/oci-alvit-repository/README.md)
+in the existing HCP organization `victron-venus`. Its workspace is
+`github-oci-alvit-repository`; it owns only that repository and its two security
+settings. Use that directory for this deployment. The top-level configuration
+and its existing state are separate, as described below.
+
 This project uses the canonical HCP Terraform workspace
 `alvit-infrastructure/github-4alvit-infrastructure` for the personal GitHub account.
-The organization belongs to the separate HCP account `4alvit`. CLI operations need
-that account's API token, supplied through `TF_TOKEN_app_terraform_io` in the
-command environment. Load it from a private credential store or hidden input;
-do not put the token in command history or overwrite another account's default
-Terraform credentials. Membership of the original `alvit` account is not required.
+The workspace ID is `ws-AKy7NQFpKuV5KHyr`. The September 2026 migration recorded
+its owner's HCP username as `4alvit`; the operator has since reported renaming
+the account. Do not select credentials by that historical username alone.
+Verify the token's identity with `GET /api/v2/account/details` and its access to
+`GET /api/v2/workspaces/ws-AKy7NQFpKuV5KHyr` before initializing the backend.
+A 404 does not distinguish a missing workspace from missing access.
+
+Supply an authorized token through `TF_TOKEN_app_terraform_io` in the command
+environment. Load it from a private credential store or hidden input; do not put
+it in command history or overwrite another account's default Terraform
+credentials. Browser sign-in does not update the CLI token. The GitHub owner
+`4alvit` is separate from the editable HCP username.
 
 ## Required Variables
 
@@ -46,6 +60,7 @@ Set these in Terraform Cloud workspace variables:
 - `home-assistant-k3s` - Private HA Supervised→k3s migration (pajikos Helm + companions)
 - `terraform-portainer-synology` - Terraform for Synology Docker stacks via Portainer (private)
 - `terraform-oracle-oci` - Terraform for Oracle Cloud home lab (VCN, SL, h5/h7/h8) (private)
+- `terraform-oracle-oci-alvit` - OCI Alvit infrastructure (private; owned by the [independent stack](stacks/oci-alvit-repository/README.md))
 - `terraform-cloudflare-alvit` - Terraform for personal Cloudflare free account (zones, DNS, Access, tunnels) (private)
 - `amazon-echo-home-voice` - Home Assistant voice control via Amazon Echo (public)
 - `google-home-voice-stats` - Home Assistant voice stats via Google Home (public)

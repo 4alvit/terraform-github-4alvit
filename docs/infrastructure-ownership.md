@@ -8,6 +8,14 @@ personal repositories containing that Terraform code still belong here.
 An empty plan covers resources represented in this state. It does not establish
 that excluded objects or API-inaccessible protections have no drift.
 
+## New OCI Alvit repository
+
+`stacks/oci-alvit-repository` is a separate Terraform root using the existing
+organization's `victron-venus/github-oci-alvit-repository` workspace. It owns only
+the new private `4alvit/terraform-oracle-oci-alvit` repository and its vulnerability
+alerts and Dependabot security updates. Those objects are deliberately absent
+from the top-level root. No existing repository, state or webhook is migrated.
+
 ## Existing Portainer Actions variables
 
 `unmanaged-integrations.tf` adopts `ENDPOINT_ID` and `PORTAINER_URL` from

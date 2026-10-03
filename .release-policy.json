@@ -14,7 +14,8 @@
     "Terraform fmt/validate use disposable source copies with backend disabled; no plan, apply, remote-state or live-provider checks. Portainer uses redacted compose fixtures. Inventory and archived monolith are excluded."
   ],
   "terraform_roots": [
-    "."
+    ".",
+    "stacks/oci-alvit-repository"
   ],
   "syntax_exclude": [
     "inventory",
