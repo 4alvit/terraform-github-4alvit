@@ -82,7 +82,7 @@ resource "github_repository_ruleset" "climate" {
   bypass_actors {
     actor_id    = 5
     actor_type  = "RepositoryRole"
-    bypass_mode = "always"
+    bypass_mode = "pull_request"
   }
 
   conditions {
