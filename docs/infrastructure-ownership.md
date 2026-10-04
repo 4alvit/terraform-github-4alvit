@@ -27,6 +27,22 @@ the new private `4alvit/terraform-oracle-oci-alvit` repository and its vulnerabi
 alerts and Dependabot security updates. Those objects are deliberately absent
 from the top-level root. No existing repository, state or webhook is migrated.
 
+## New Claude harness repository
+
+`stacks/claude-harness-repository` is the sole state owner of the new private
+`4alvit/claude-harness` repository and its vulnerability alerts and Dependabot
+security updates. Its HCP workspace is
+`victron-venus/github-claude-harness-repository`, using local execution and remote
+state. The stack follows the existing independent-root pattern for a newly
+requested repository; these resources are absent from all other roots.
+
+The authenticated HCP account's canonical-workspace lookup returned HTTP 404 on
+2026-10-03, which can indicate missing access or a missing workspace. This new
+root does not diagnose or repair that access issue, recreate the canonical
+workspace, or reuse its configuration with empty state. No existing repository,
+backend, state, credential, or webhook is migrated. Any future ownership change
+requires a coordinated state handoff, never duplicate resource ownership.
+
 ## Existing Portainer Actions variables
 
 `unmanaged-integrations.tf` adopts `ENDPOINT_ID` and `PORTAINER_URL` from

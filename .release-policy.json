@@ -16,7 +16,8 @@
   "terraform_roots": [
     ".",
     "stacks/oci-alvit-repository",
-    "stacks/inverter-climate-repository"
+    "stacks/inverter-climate-repository",
+    "stacks/claude-harness-repository"
   ],
   "syntax_exclude": [
     "inventory",
