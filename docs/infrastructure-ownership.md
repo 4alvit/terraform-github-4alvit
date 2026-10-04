@@ -114,3 +114,10 @@ private repositories in the 25-repository account inventory. Those protections
 are **unverified**, not proven absent. The fourteen public repositories had no
 separate classic default-branch protection; their rulesets were inventoried.
 No plan upgrade or paid protection is introduced to remove this visibility limit.
+
+## RuView home sensing
+
+Private `4alvit/ruview-home-sensing` is owned by the independent
+[repository stack](../stacks/ruview-home-sensing-repository/README.md).
+Its HCP workspace is `victron-venus/github-ruview-home-sensing-repository`;
+it does not share resource ownership with the canonical top-level state.

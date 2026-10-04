@@ -17,6 +17,7 @@ ROOT = Path(__file__).resolve().parents[1]
 STACKS = (
     ROOT / "stacks/oci-alvit-repository",
     ROOT / "stacks/claude-harness-repository",
+    ROOT / "stacks/ruview-home-sensing-repository",
 )
 OWNER = "4alvit"
 PROVIDERS = """terraform {
