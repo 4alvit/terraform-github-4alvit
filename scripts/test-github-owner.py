@@ -14,7 +14,10 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-STACK = ROOT / "stacks/oci-alvit-repository"
+STACKS = (
+    ROOT / "stacks/oci-alvit-repository",
+    ROOT / "stacks/claude-harness-repository",
+)
 OWNER = "4alvit"
 PROVIDERS = """terraform {
   required_providers {
@@ -52,9 +55,9 @@ class FakeGitHub(BaseHTTPRequestHandler):
         """Keep request credentials and provider noise out of test output."""
 
 
-def provider_block():
+def provider_block(stack):
     """Use the deployment's real owner settings, without its backend/resources."""
-    source = (STACK / "main.tf").read_text(encoding="utf-8")
+    source = (stack / "main.tf").read_text(encoding="utf-8")
     matches = re.findall(r'^provider "github" \{\n([^{}]*)^\}', source, re.MULTILINE)
     if len(matches) != 1:
         raise ValueError("Expected one simple GitHub provider block")
@@ -120,13 +123,16 @@ output "fixture_user" {{ value = data.github_user.authenticated.login }}
 
 def main():
     """Test hostile inherited owner values and a failing original-code control."""
-    body = provider_block()
+    bodies = [(stack, provider_block(stack)) for stack in STACKS]
+    lock = (STACKS[0] / ".terraform.lock.hcl").read_bytes()
+    if any((stack / ".terraform.lock.hcl").read_bytes() != lock for stack in STACKS):
+        raise ValueError("Owner fixtures require identical provider locks")
     with tempfile.TemporaryDirectory(prefix="github-owner-contract-") as temporary:
         directory = Path(temporary)
         (directory / "empty.tfrc").write_text("", encoding="utf-8")
         (directory / "provider-cache").mkdir()
         shutil.copyfile(
-            STACK / ".terraform.lock.hcl", directory / ".terraform.lock.hcl"
+            STACKS[0] / ".terraform.lock.hcl", directory / ".terraform.lock.hcl"
         )
         environment = {
             "PATH": os.environ["PATH"],
@@ -165,26 +171,27 @@ def main():
                         "GITHUB_ORGANIZATION": "wrong-organization",
                     },
                 ]
-                for inherited in conflicts:
-                    check_owner(directory, environment, server, body, inherited, OWNER)
-                # Prove this regression exercises real v6 precedence, not a mock
-                # that always returns the desired owner regardless of configuration.
-                old_body = re.sub(
-                    r"^\s*organization\s*=.*\n", "", body, flags=re.MULTILINE
-                )
-                check_owner(
-                    directory,
-                    environment,
-                    server,
-                    old_body,
-                    conflicts[-1],
-                    "wrong-organization",
-                )
+                for stack, body in bodies:
+                    for inherited in conflicts:
+                        check_owner(directory, environment, server, body, inherited, OWNER)
+                    # Verify real v6 precedence, not a fixture that ignores owner settings.
+                    old_body = re.sub(
+                        r"^\s*organization\s*=.*\n", "", body, flags=re.MULTILINE
+                    )
+                    check_owner(
+                        directory,
+                        environment,
+                        server,
+                        old_body,
+                        conflicts[-1],
+                        "wrong-organization",
+                    )
+                    print(f"Owner contract passed: {stack.relative_to(ROOT)}")
             finally:
                 server.shutdown()
                 thread.join()
     print(
-        "GitHub owner contract passed: four environment cases and original-code control."
+        "GitHub owner contracts passed: four environment cases and a negative control per stack."
     )
 
 
