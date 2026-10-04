@@ -10,6 +10,12 @@ See [CI and deployment workflow](docs/release-workflow.md) for required checks a
 
 ## Workspace
 
+The new private `4alvit/claude-harness` repository has its own
+[Claude harness repository stack](stacks/claude-harness-repository/README.md)
+and HCP workspace `victron-venus/github-claude-harness-repository`. It owns only
+that new repository and its two security settings. It does not migrate or
+replace the canonical personal state.
+
 The new private `4alvit/terraform-oracle-oci-alvit` repository is managed by the
 independent [OCI Alvit repository stack](stacks/oci-alvit-repository/README.md)
 in the existing HCP organization `victron-venus`. Its workspace is
@@ -60,6 +66,7 @@ Set these in Terraform Cloud workspace variables:
 - `home-assistant-k3s` - Private HA Supervised→k3s migration (pajikos Helm + companions)
 - `terraform-portainer-synology` - Terraform for Synology Docker stacks via Portainer (private)
 - `terraform-oracle-oci` - Terraform for Oracle Cloud home lab (VCN, SL, h5/h7/h8) (private)
+- `claude-harness` - Claude CLI harness (private; owned by the [independent stack](stacks/claude-harness-repository/README.md))
 - `terraform-oracle-oci-alvit` - OCI Alvit infrastructure (private; owned by the [independent stack](stacks/oci-alvit-repository/README.md))
 - `terraform-cloudflare-alvit` - Terraform for personal Cloudflare free account (zones, DNS, Access, tunnels) (private)
 - `amazon-echo-home-voice` - Home Assistant voice control via Amazon Echo (public)
