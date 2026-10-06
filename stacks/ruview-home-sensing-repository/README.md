@@ -1,15 +1,33 @@
-# RuView home sensing repository
+# Independent repository stack
 
-This independent Terraform root owns the private `4alvit/ruview-home-sensing`
-repository, vulnerability alerts and Dependabot security updates. It follows the
-existing independent repository-stack pattern and neither imports nor changes
-the top-level canonical state.
+This Terraform root owns the repository declared in its configuration,
+vulnerability alerts and Dependabot security updates. It has a separate backend
+and must remain the sole state owner of those objects. It neither imports nor
+changes the top-level canonical state.
 
-State: `victron-venus/github-ruview-home-sensing-repository`, local execution.
-Use the existing HCP credentials and a `GITHUB_TOKEN` for account `4alvit`.
-The first reviewed plan must have exactly three creates and no changes or
-deletions. Apply the saved plan, verify private visibility, then verify a
-no-change plan. Never commit state, saved plans or credentials.
+Run Terraform from this directory. Verify the configured backend and authorized
+HCP identity before initialization. Use local execution with auto-apply disabled
+where required by the backend configuration. Load `GITHUB_TOKEN` from the
+operator's credential store into the process environment; never store it in
+source or saved public plan output. The configured GitHub account check must
+succeed before creating resources.
 
-Application Kubernetes resources have separate state, documented in the private
-application repository.
+The provider configuration pins `owner` and the legacy `organization` argument
+to prevent inherited owner variables from redirecting provider 6.x. Keep that
+compatibility setting until a provider upgrade validates precedence. Clear
+inherited `TF_CLI_ARGS*` overrides before preparing a plan.
+
+Review a fresh, complete saved plan and apply only those accepted bytes. An
+initial application must contain exactly three creates, with no changes,
+destroys or imports. Later changes must preserve the repository identity and
+visibility. Do not reapply an initial-create plan to an existing deployment or
+add these resources to another root. Keep plans and state outside source control
+and verify a no-change plan after an approved apply.
+
+Repository destruction is guarded by `prevent_destroy` while its resource block
+remains present. That safeguard is not a substitute for reviewing configuration
+removal. Source publication and application deployment are separate operations.
+
+From the repository root, `bash scripts/ci.sh` validates the configured roots
+without backend access. Keep the complete resource inventory and deployment
+receipts with the operator's protected configuration, outside public documentation.

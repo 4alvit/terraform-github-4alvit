@@ -10,18 +10,9 @@ See [CI and deployment workflow](docs/release-workflow.md) for required checks a
 
 ## Workspace
 
-The new private `4alvit/claude-harness` repository has its own
-[Claude harness repository stack](stacks/claude-harness-repository/README.md)
-and HCP workspace `victron-venus/github-claude-harness-repository`. It owns only
-that new repository and its two security settings. It does not migrate or
-replace the canonical personal state.
-
-The new private `4alvit/terraform-oracle-oci-alvit` repository is managed by the
-independent [OCI Alvit repository stack](stacks/oci-alvit-repository/README.md)
-in the existing HCP organization `victron-venus`. Its workspace is
-`github-oci-alvit-repository`; it owns only that repository and its two security
-settings. Use that directory for this deployment. The top-level configuration
-and its existing state are separate, as described below.
+Independent repository roots have separate state ownership. Their operating
+instructions live beside their configuration; do not add the same remote object
+to the top-level state or use an empty state as an access-recovery workaround.
 
 This project uses the canonical HCP Terraform workspace
 `alvit-infrastructure/github-4alvit-infrastructure` for the personal GitHub account.
@@ -49,30 +40,30 @@ Set these in Terraform Cloud workspace variables:
 
 ## Managed Resources
 
-### Repositories (All under 4alvit account)
-- `alvit-meet` - Private home video calls, TCP/TLS media relay, and WAN DNS updater integration
-- `energy-data-rag-pipeline` - RAG pipeline for Victron Energy docs
-- `mcp-venus-os` - MCP server for Venus OS management
-- `solar-forecast-langgraph` - LangGraph solar forecasting workflow
-- `mqtt-observability-opentelemetry` - OpenTelemetry/Prometheus for Venus OS
-- `esphome-ble-sensor-patterns` - ESPHome BLE sensor patterns
-- `fastapi-mqtt-gateway` - REST/WebSocket → MQTT bridge
-- `dbus-service-template` - Copier template for D-Bus services
-- `4alvit` - GitHub profile repo
-- `terraform-github-victron` - Terraform for victron-venus org
-- `home-assistant` - Home Assistant config (private)
-- `github-deploy-webhook` - GitHub deploy webhook + CF Tunnel (private; Cerbo/Synology/Portainer)
-- `k3s-self-healing` - Private k3s home cluster provisioning (h5/h7/h8, IRC eggdrop/psybnc/znc)
-- `home-assistant-k3s` - Private HA Supervised→k3s migration (pajikos Helm + companions)
-- `terraform-portainer-synology` - Terraform for Synology Docker stacks via Portainer (private)
-- `terraform-oracle-oci` - Terraform for Oracle Cloud home lab (VCN, SL, h5/h7/h8) (private)
-- `claude-harness` - Claude CLI harness (private; owned by the [independent stack](stacks/claude-harness-repository/README.md))
-- `terraform-oracle-oci-alvit` - OCI Alvit infrastructure (private; owned by the [independent stack](stacks/oci-alvit-repository/README.md))
-- `terraform-cloudflare-alvit` - Terraform for personal Cloudflare free account (zones, DNS, Access, tunnels) (private)
-- `amazon-echo-home-voice` - Home Assistant voice control via Amazon Echo (public)
-- `google-home-voice-stats` - Home Assistant voice stats via Google Home (public)
+### Public repositories
 
-- `robinhood` - Private Robinhood MCP server for account analytics and controlled trading; dedicated self-hosted CI runner
+The public catalog is grouped by purpose. Repository contents and deployments
+remain the responsibility of their own projects:
+
+- [energy-data-rag-pipeline](https://github.com/4alvit/energy-data-rag-pipeline),
+  [mcp-venus-os](https://github.com/4alvit/mcp-venus-os) and
+  [solar-forecast-langgraph](https://github.com/4alvit/solar-forecast-langgraph) —
+  documentation retrieval, MCP tools and forecasting.
+- [mqtt-observability-opentelemetry](https://github.com/4alvit/mqtt-observability-opentelemetry)
+  and [fastapi-mqtt-gateway](https://github.com/4alvit/fastapi-mqtt-gateway) — MQTT tooling.
+- [esphome-ble-sensor-patterns](https://github.com/4alvit/esphome-ble-sensor-patterns)
+  and [dbus-service-template](https://github.com/4alvit/dbus-service-template) — reusable examples.
+- [amazon-echo-home-voice](https://github.com/4alvit/amazon-echo-home-voice) and
+  [google-home-voice-stats](https://github.com/4alvit/google-home-voice-stats) — energy-report adapters.
+- [4alvit](https://github.com/4alvit/4alvit) and
+  [iot-project-builder-profile](https://github.com/4alvit/iot-project-builder-profile) — project discovery.
+- [terraform-github-victron](https://github.com/4alvit/terraform-github-victron),
+  [terraform-github-open-ott-play](https://github.com/4alvit/terraform-github-open-ott-play)
+  and [terraform-github-ha-homelab](https://github.com/4alvit/terraform-github-ha-homelab)
+  — organization repository settings.
+
+This is a public discovery list, not evidence of complete Terraform state
+coverage. Reconcile authorized live inventory with each state before adoption.
 
 ### Explicit organization repository exception
 
@@ -128,10 +119,3 @@ Import blocks are included in `main.tf` for existing repositories. Run:
 terraform init
 terraform plan  # Will show imports
 ```
-
-## RuView home sensing
-
-Private `4alvit/ruview-home-sensing` is owned by the independent
-[repository stack](stacks/ruview-home-sensing-repository/README.md).
-Its HCP workspace is `victron-venus/github-ruview-home-sensing-repository`;
-it does not share resource ownership with the canonical top-level state.
