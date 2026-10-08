@@ -119,3 +119,11 @@ Import blocks are included in `main.tf` for existing repositories. Run:
 terraform init
 terraform plan  # Will show imports
 ```
+
+## Contributions and public security
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for bug reports, proposed changes and tests,
+[SECURITY.md](SECURITY.md) for private vulnerability reports, and
+[public security policy](docs/public-security.md) for review requirements,
+secret protection and rollout/state ownership. OpenSSF readiness is assessed
+for this infrastructure repository separately from the projects it manages.

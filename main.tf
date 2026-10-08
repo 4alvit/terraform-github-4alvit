@@ -191,9 +191,6 @@ locals {
       topics           = ["home-assistant", "home-automation", "yaml"]
     },
 
-
-
-
     home_assistant_k3s = {
       name             = "home-assistant-k3s"
       description      = "Private HA Supervised→k3s migration — pajikos Helm Core + companion Mosquitto/ESPHome/Ring"
@@ -232,7 +229,6 @@ locals {
         "portainer", "python", "synology", "victron", "webhook"
       ]
     },
-
 
     terraform_portainer_synology = {
       name             = "terraform-portainer-synology"
@@ -313,8 +309,9 @@ locals {
 }
 
 module "repos" {
-  source   = "./modules/github_repo"
-  for_each = local.repositories
+  enable_public_security = contains(local.active_public_software_repositories, each.value.name)
+  source                 = "./modules/github_repo"
+  for_each               = local.repositories
 
   name        = each.value.name
   description = each.value.description
@@ -379,7 +376,6 @@ resource "github_repository_vulnerability_alerts" "iot_project_builder_profile" 
   repository = module.repos["iot_project_builder_profile"].repository.name
 }
 
-
 resource "github_repository_vulnerability_alerts" "k3s_self_healing" {
   repository = module.repos["k3s_self_healing"].repository.name
 }
@@ -392,17 +388,13 @@ resource "github_repository_vulnerability_alerts" "terraform_oracle_oci" {
   repository = module.repos["terraform_oracle_oci"].repository.name
 }
 
-
 resource "github_repository_vulnerability_alerts" "terraform_cloudflare_alvit" {
   repository = module.repos["terraform_cloudflare_alvit"].repository.name
 }
 
-
-
 resource "github_repository_vulnerability_alerts" "home_assistant_k3s" {
   repository = module.repos["home_assistant_k3s"].repository.name
 }
-
 
 resource "github_repository_vulnerability_alerts" "amazon_echo_home_voice" {
   repository = module.repos["amazon_echo_home_voice"].repository.name
@@ -411,8 +403,6 @@ resource "github_repository_vulnerability_alerts" "amazon_echo_home_voice" {
 resource "github_repository_vulnerability_alerts" "google_home_voice_stats" {
   repository = module.repos["google_home_voice_stats"].repository.name
 }
-
-
 
 resource "github_repository_dependabot_security_updates" "energy_data_rag_pipeline" {
   repository = module.repos["energy_data_rag_pipeline"].repository.id
@@ -459,7 +449,6 @@ resource "github_repository_dependabot_security_updates" "iot_project_builder_pr
   enabled    = true
 }
 
-
 resource "github_repository_dependabot_security_updates" "k3s_self_healing" {
   repository = module.repos["k3s_self_healing"].repository.id
   enabled    = true
@@ -475,18 +464,15 @@ resource "github_repository_dependabot_security_updates" "terraform_oracle_oci" 
   enabled    = true
 }
 
-
 resource "github_repository_dependabot_security_updates" "terraform_cloudflare_alvit" {
   repository = module.repos["terraform_cloudflare_alvit"].repository.id
   enabled    = true
 }
 
-
 resource "github_repository_dependabot_security_updates" "home_assistant_k3s" {
   repository = module.repos["home_assistant_k3s"].repository.id
   enabled    = true
 }
-
 
 resource "github_repository_dependabot_security_updates" "amazon_echo_home_voice" {
   repository = module.repos["amazon_echo_home_voice"].repository.id
@@ -497,9 +483,6 @@ resource "github_repository_dependabot_security_updates" "google_home_voice_stat
   repository = module.repos["google_home_voice_stats"].repository.id
   enabled    = true
 }
-
-
-
 
 resource "github_repository_pages" "iot_project_builder_profile" {
   repository = module.repos["iot_project_builder_profile"].repository.name
@@ -537,15 +520,18 @@ resource "github_repository_ruleset" "default" {
   target      = "branch"
   enforcement = "active"
 
-  bypass_actors {
-    actor_id    = 5
-    actor_type  = "RepositoryRole"
-    bypass_mode = "always"
+  dynamic "bypass_actors" {
+    for_each = contains(local.active_public_software_repositories, each.value) ? [] : [true]
+    content {
+      actor_id    = 5
+      actor_type  = "RepositoryRole"
+      bypass_mode = "always"
+    }
   }
 
   # Preserve existing actor grants when importing the two manually created rulesets.
   dynamic "bypass_actors" {
-    for_each = contains(["iot-project-builder-profile", "terraform-github-open-ott-play"], each.value) ? [] : [data.github_app.gitar.id]
+    for_each = (contains(local.active_public_software_repositories, each.value) || contains(["iot-project-builder-profile", "terraform-github-open-ott-play"], each.value)) ? [] : [data.github_app.gitar.id]
     content {
       actor_id    = bypass_actors.value
       actor_type  = "Integration"
@@ -572,10 +558,10 @@ resource "github_repository_ruleset" "default" {
 
     pull_request {
       allowed_merge_methods             = ["merge", "squash", "rebase"]
-      dismiss_stale_reviews_on_push     = false
+      dismiss_stale_reviews_on_push     = contains(local.active_public_software_repositories, each.value)
       require_code_owner_review         = true
       require_last_push_approval        = true
-      required_approving_review_count   = 1
+      required_approving_review_count   = contains(local.active_public_software_repositories, each.value) ? 2 : 1
       required_review_thread_resolution = true
     }
 

@@ -21,12 +21,6 @@ resource "github_repository_ruleset" "ha_homelab_infrastructure" {
   target      = "branch"
   enforcement = "active"
 
-  bypass_actors {
-    actor_id    = 5
-    actor_type  = "RepositoryRole"
-    bypass_mode = "always"
-  }
-
   conditions {
     ref_name {
       include = ["~DEFAULT_BRANCH"]
@@ -38,8 +32,10 @@ resource "github_repository_ruleset" "ha_homelab_infrastructure" {
     deletion         = true
     non_fast_forward = true
     pull_request {
+      dismiss_stale_reviews_on_push     = true
+      require_last_push_approval        = true
       allowed_merge_methods             = ["merge", "squash", "rebase"]
-      required_approving_review_count   = 0
+      required_approving_review_count   = 2
       required_review_thread_resolution = true
     }
     required_status_checks {

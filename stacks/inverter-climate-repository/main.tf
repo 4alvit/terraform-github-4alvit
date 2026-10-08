@@ -27,6 +27,14 @@ data "github_user" "authenticated" {
 }
 
 resource "github_repository" "climate" {
+  security_and_analysis {
+    secret_scanning {
+      status = "enabled"
+    }
+    secret_scanning_push_protection {
+      status = "enabled"
+    }
+  }
   name                   = "inverter-climate"
   description            = "Energy-aware climate coordination via Home Assistant and Victron"
   visibility             = "public"
@@ -79,12 +87,6 @@ resource "github_repository_ruleset" "climate" {
   target      = "branch"
   enforcement = "active"
 
-  bypass_actors {
-    actor_id    = 5
-    actor_type  = "RepositoryRole"
-    bypass_mode = "pull_request"
-  }
-
   conditions {
     ref_name {
       include = ["~DEFAULT_BRANCH"]
@@ -105,7 +107,9 @@ resource "github_repository_ruleset" "climate" {
     }
     pull_request {
       allowed_merge_methods             = ["merge", "squash", "rebase"]
-      required_approving_review_count   = 0
+      required_approving_review_count   = 2
+      dismiss_stale_reviews_on_push     = true
+      require_last_push_approval        = true
       required_review_thread_resolution = true
     }
   }
