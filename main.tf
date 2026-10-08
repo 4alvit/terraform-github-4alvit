@@ -558,7 +558,7 @@ resource "github_repository_ruleset" "default" {
 
     pull_request {
       allowed_merge_methods             = ["merge", "squash", "rebase"]
-      dismiss_stale_reviews_on_push     = contains(local.active_public_software_repositories, each.value)
+      dismiss_stale_reviews_on_push     = contains(local.active_public_software_repositories, each.value) || each.value == "4alvit"
       require_code_owner_review         = true
       require_last_push_approval        = true
       required_approving_review_count   = contains(local.active_public_software_repositories, each.value) ? 2 : 1
