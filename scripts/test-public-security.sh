@@ -1,18 +1,16 @@
 #!/usr/bin/env bash
 set -euo pipefail
 cd "$(dirname "$0")/.."
-temporary=$(mktemp -d "${TMPDIR:-/tmp}/release-governance-test.XXXXXX")
+temporary=$(mktemp -d "${TMPDIR:-/tmp}/public-security-test.XXXXXX")
 trap 'rm -rf "$temporary"' EXIT
 mkdir -p "$temporary/tests" "$temporary/provider-cache"
 touch "$temporary/empty.tfrc"
-cp public-security.tf release-standards.tf tests/release-governance/main.tf "$temporary/"
-cp tests/release-governance.tftest.hcl "$temporary/tests/"
+cp public-security.tf tests/public-security-main.tf.fixture "$temporary/"
+mv "$temporary/public-security-main.tf.fixture" "$temporary/main.tf"
+cp tests/public-security.tftest.hcl "$temporary/tests/"
 if [[ -f .terraform.lock.hcl ]]; then
   cp .terraform.lock.hcl "$temporary/"
 fi
-
-# The test copy has no cloud/backend configuration. Drop credentials and ambient
-# Terraform arguments, and use mock-provider plan tests with no live API calls.
 test_terraform() {
   env -i PATH="$PATH" HOME="$temporary" TF_IN_AUTOMATION=1 TF_INPUT=0 \
     TF_CLI_CONFIG_FILE="$temporary/empty.tfrc" TF_PLUGIN_CACHE_DIR="$temporary/provider-cache" \

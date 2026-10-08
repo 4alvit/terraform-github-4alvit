@@ -71,7 +71,25 @@ variable "license_template" {
   default     = "mit"
 }
 
+variable "enable_public_security" {
+  description = "Enable free secret protection for explicitly audited public repositories."
+  type        = bool
+  default     = false
+}
+
 resource "github_repository" "this" {
+  dynamic "security_and_analysis" {
+    for_each = var.enable_public_security && var.visibility == "public" ? [true] : []
+    content {
+      secret_scanning {
+        status = "enabled"
+      }
+      secret_scanning_push_protection {
+        status = "enabled"
+      }
+    }
+  }
+
   name        = var.name
   description = var.description
   visibility  = var.visibility
