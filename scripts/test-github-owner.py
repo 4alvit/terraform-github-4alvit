@@ -18,6 +18,7 @@ STACKS = (
     ROOT / "stacks/oci-alvit-repository",
     ROOT / "stacks/claude-harness-repository",
     ROOT / "stacks/ruview-home-sensing-repository",
+    ROOT / "stacks/speeddial-repository",
 )
 OWNER = "4alvit"
 PROVIDERS = """terraform {

@@ -15,7 +15,8 @@
     "stacks/oci-alvit-repository",
     "stacks/inverter-climate-repository",
     "stacks/claude-harness-repository",
-    "stacks/ruview-home-sensing-repository"
+    "stacks/ruview-home-sensing-repository",
+    "stacks/speeddial-repository"
   ],
   "syntax_exclude": [
     "inventory",
