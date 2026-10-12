@@ -21,6 +21,15 @@ resource "github_repository_ruleset" "ha_homelab_infrastructure" {
   target      = "branch"
   enforcement = "active"
 
+  dynamic "bypass_actors" {
+    for_each = contains(local.enforced_public_software_repositories, "terraform-github-ha-homelab") ? [] : [true]
+    content {
+      actor_id    = 5
+      actor_type  = "RepositoryRole"
+      bypass_mode = "always"
+    }
+  }
+
   conditions {
     ref_name {
       include = ["~DEFAULT_BRANCH"]
@@ -32,10 +41,10 @@ resource "github_repository_ruleset" "ha_homelab_infrastructure" {
     deletion         = true
     non_fast_forward = true
     pull_request {
-      dismiss_stale_reviews_on_push     = true
-      require_last_push_approval        = true
+      dismiss_stale_reviews_on_push     = contains(local.enforced_public_software_repositories, "terraform-github-ha-homelab")
+      require_last_push_approval        = contains(local.enforced_public_software_repositories, "terraform-github-ha-homelab")
       allowed_merge_methods             = ["merge", "squash", "rebase"]
-      required_approving_review_count   = 1
+      required_approving_review_count   = contains(local.enforced_public_software_repositories, "terraform-github-ha-homelab") ? 1 : 0
       required_review_thread_resolution = true
     }
     required_status_checks {

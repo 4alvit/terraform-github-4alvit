@@ -10,6 +10,13 @@ mock_provider "github" {
 
 run "review_requires_one_current_approval_without_bypass" {
   command = plan
+  variables {
+    public_security_enforcement_repositories = ["amazon-echo-home-voice", "default", "google-home-voice-stats"]
+  }
+  assert {
+    condition     = length(github_repository_ruleset.public_review) == 3
+    error_message = "Explicitly selected public repositories must receive review rules."
+  }
   assert {
     condition = alltrue([
       for policy in github_repository_ruleset.public_review : (
@@ -26,6 +33,9 @@ run "review_requires_one_current_approval_without_bypass" {
 
 run "private_repository_is_excluded" {
   command = plan
+  variables {
+    public_security_enforcement_repositories = ["amazon-echo-home-voice"]
+  }
   override_data {
     target = data.github_repository.public_software["amazon-echo-home-voice"]
     values = {
@@ -41,6 +51,9 @@ run "private_repository_is_excluded" {
 
 run "archived_repository_is_excluded" {
   command = plan
+  variables {
+    public_security_enforcement_repositories = ["amazon-echo-home-voice"]
+  }
   override_data {
     target = data.github_repository.public_software["amazon-echo-home-voice"]
     values = {
@@ -51,5 +64,13 @@ run "archived_repository_is_excluded" {
   assert {
     condition     = !contains(local.active_public_software_repositories, "amazon-echo-home-voice") && !contains(keys(github_repository_ruleset.public_review), "amazon-echo-home-voice")
     error_message = "Do not change archived repository protections."
+  }
+}
+
+run "reconciliation_preserves_existing_governance" {
+  command = plan
+  assert {
+    condition     = length(github_repository_ruleset.public_review) == 0
+    error_message = "Routine reconciliation must not activate unreviewed review rules."
   }
 }

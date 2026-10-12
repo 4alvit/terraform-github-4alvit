@@ -7,7 +7,17 @@ resource "github_repository_vulnerability_alerts" "alvit_meet" {
   repository = module.repos["alvit_meet"].repository.name
 }
 
+import {
+  to = github_repository_vulnerability_alerts.alvit_meet
+  id = "alvit-meet"
+}
+
 resource "github_repository_dependabot_security_updates" "alvit_meet" {
   repository = module.repos["alvit_meet"].repository.id
   enabled    = true
+}
+
+import {
+  to = github_repository_dependabot_security_updates.alvit_meet
+  id = "alvit-meet"
 }
