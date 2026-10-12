@@ -5,7 +5,8 @@ Live metadata excludes private and archived repositories from new protections.
 The required review count is one approval from a reviewer with Write access.
 Automation may provide that approval. Keep this count at one when reconciling
 Terraform with GitHub. Other committed proposals, including changes to bypass
-actors and new review rules, still need separate review before a broad apply.
+actors and new review rules, require explicit selection through
+`public_security_enforcement_repositories`, which is empty by default.
 Existing checks, signatures and immutable-tag protections remain separate
 requirements.
 
@@ -32,10 +33,13 @@ apply the live repair. A separate guarded update must verify the exact current
 body and its own recorded rejection before removing that app exception. It does
 not authorize removing valid or unverified app exceptions in other repositories.
 
-A broad Terraform apply remains deferred: other committed bypass settings and
-new rules still differ from the selected live policy. Inspect those differences
-against the canonical existing state and reconcile them in a separate reviewed
-change before any broader apply. Do not apply from empty or unrelated state.
+Routine reconciliation preserves existing administrator exceptions and does not
+activate new review rules. Select repositories in
+`public_security_enforcement_repositories` only after verifying their reviewers
+and approval workflows. Selection does not change the required count above one.
+Existing enforced reviews remain active even when the selection is empty.
+Inspect a full plan against the canonical existing state before any apply; use
+the reviewed saved plan. Do not apply from empty or unrelated state.
 For each selected setting update, compare the complete current ruleset with its
 reviewed baseline, save the previous body and read back the result. Complete
 active code PRs before enabling the new dismissal requirement for their

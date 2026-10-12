@@ -210,8 +210,8 @@ locals {
       visibility       = "private"
       has_wiki         = false
       license_template = ""
-      # Required checks run in the guarded local merge script for this private repo.
-      allow_auto_merge = false
+      # Preserve the existing merge setting when reconciling repository metadata.
+      allow_auto_merge = true
       topics = [
         "eggdrop", "irc", "k3s", "kubernetes", "longhorn",
         "psybnc", "self-hosted", "znc"
@@ -521,7 +521,7 @@ resource "github_repository_ruleset" "default" {
   enforcement = "active"
 
   dynamic "bypass_actors" {
-    for_each = contains(local.active_public_software_repositories, each.value) ? [] : [true]
+    for_each = contains(local.enforced_public_software_repositories, each.value) ? [] : [true]
     content {
       actor_id    = 5
       actor_type  = "RepositoryRole"

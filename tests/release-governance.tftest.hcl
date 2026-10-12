@@ -209,10 +209,26 @@ run "token_defaults_preserve_actions_approval" {
 run "audited_public_ci_has_no_bypass" {
   command = plan
   variables {
-    release_gate_repositories = ["amazon-echo-home-voice"]
+    release_gate_repositories                = ["amazon-echo-home-voice"]
+    public_security_enforcement_repositories = ["amazon-echo-home-voice"]
   }
   assert {
     condition     = length(github_repository_ruleset.release_quality_gate["amazon-echo-home-voice"].bypass_actors) == 0
     error_message = "Audited public CI cannot be bypassed by administrators."
+  }
+}
+
+run "unselected_public_ci_preserves_existing_bypass" {
+  command = plan
+  variables {
+    release_gate_repositories = ["amazon-echo-home-voice"]
+  }
+  assert {
+    condition = (
+      length(github_repository_ruleset.release_quality_gate["amazon-echo-home-voice"].bypass_actors) == 1 &&
+      one(github_repository_ruleset.release_quality_gate["amazon-echo-home-voice"].bypass_actors).actor_id == 5 &&
+      one(github_repository_ruleset.release_quality_gate["amazon-echo-home-voice"].bypass_actors).bypass_mode == "pull_request"
+    )
+    error_message = "State reconciliation must not activate deferred bypass changes."
   }
 }
