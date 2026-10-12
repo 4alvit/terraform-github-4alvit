@@ -60,8 +60,12 @@ def main():
                     if repo["owner"]["login"] == args.owner]
     endpoints = set()
     unavailable = []
+    archived = []
     for repo in repositories:
         name = repo["full_name"]
+        if repo["archived"]:
+            archived.append(name)
+            continue
         pages = api(f"repos/{name}/rulesets?includes_parents=true&per_page=100", paginate=True)
         if pages is None:
             unavailable.append(name)
@@ -97,7 +101,8 @@ def main():
                 raise RuntimeError("Ruleset verification failed: " + endpoint)
         changes.append(endpoint)
     print(json.dumps({"owner": args.owner, "applied": args.apply,
-                      "changed_rulesets": changes, "feature_unavailable": unavailable}, indent=2))
+                      "changed_rulesets": changes, "feature_unavailable": unavailable,
+                      "archived_read_only": archived}, indent=2))
 
 
 if __name__ == "__main__":
