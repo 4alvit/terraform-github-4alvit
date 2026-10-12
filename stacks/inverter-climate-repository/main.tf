@@ -107,7 +107,7 @@ resource "github_repository_ruleset" "climate" {
     }
     pull_request {
       allowed_merge_methods             = ["merge", "squash", "rebase"]
-      required_approving_review_count   = 2
+      required_approving_review_count   = 1
       dismiss_stale_reviews_on_push     = true
       require_last_push_approval        = true
       required_review_thread_resolution = true

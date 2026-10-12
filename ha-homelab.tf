@@ -35,7 +35,7 @@ resource "github_repository_ruleset" "ha_homelab_infrastructure" {
       dismiss_stale_reviews_on_push     = true
       require_last_push_approval        = true
       allowed_merge_methods             = ["merge", "squash", "rebase"]
-      required_approving_review_count   = 2
+      required_approving_review_count   = 1
       required_review_thread_resolution = true
     }
     required_status_checks {
