@@ -1,4 +1,4 @@
-# Adopt existing Actions variables without publishing their values in source.
+# Adopt existing Actions settings without publishing their values in source.
 # The canonical HCP workspace must supply the exact current GitHub values as
 # sensitive Terraform inputs before planning or importing these resources.
 variable "portainer_actions_endpoint_id" {
@@ -14,7 +14,7 @@ variable "portainer_actions_endpoint_id" {
 }
 
 variable "portainer_actions_url" {
-  description = "Existing PORTAINER_URL Actions variable in 4alvit/terraform-portainer-synology"
+  description = "Existing PORTAINER_URL Actions secret; preserve the exact URL from the sensitive workspace input"
   type        = string
   sensitive   = true
   nullable    = false
@@ -31,10 +31,20 @@ resource "github_actions_variable" "portainer_endpoint_id" {
   value         = var.portainer_actions_endpoint_id
 }
 
-resource "github_actions_variable" "portainer_url" {
-  repository    = module.repos["terraform_portainer_synology"].repository.name
-  variable_name = "PORTAINER_URL"
-  value         = var.portainer_actions_url
+# The old variable is removed separately after both workflow consumers use the
+# secret. Forget its state entry without recreating or deleting a remote object.
+removed {
+  from = github_actions_variable.portainer_url
+
+  lifecycle {
+    destroy = false
+  }
+}
+
+resource "github_actions_secret" "portainer_url" {
+  repository      = module.repos["terraform_portainer_synology"].repository.name
+  secret_name     = "PORTAINER_URL"
+  plaintext_value = var.portainer_actions_url
 }
 
 import {
@@ -43,8 +53,8 @@ import {
 }
 
 import {
-  to = github_actions_variable.portainer_url
-  id = "terraform-portainer-synology:PORTAINER_URL"
+  to = github_actions_secret.portainer_url
+  id = "terraform-portainer-synology/PORTAINER_URL"
 }
 
 # The existing receiver is Portainer stack 28 (github-deploy-webhook), owned by

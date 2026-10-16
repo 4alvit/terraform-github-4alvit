@@ -25,20 +25,35 @@ An empty plan covers resources represented in that state. It does not establish
 that excluded objects or API-inaccessible protections have no drift. Keep the
 complete authorized inventory and operational evidence outside public docs.
 
-## Existing Actions variables
+## Existing Actions settings
 
-`unmanaged-integrations.tf` adopts `ENDPOINT_ID` and `PORTAINER_URL` for the
-configured repository. Before importing, copy the exact existing GitHub values
-through authenticated API clients into these sensitive Terraform-category inputs,
-with HCL parsing disabled:
+`unmanaged-integrations.tf` adopts the `ENDPOINT_ID` variable and the
+`PORTAINER_URL` secret for the configured repository. Their exact values are
+supplied through sensitive Terraform-category inputs, with HCL parsing disabled:
 
 - `portainer_actions_endpoint_id` receives `ENDPOINT_ID`.
-- `portainer_actions_url` receives `PORTAINER_URL`.
+- `portainer_actions_url` retains the original `PORTAINER_URL` value.
 
 The inputs have no defaults. Do not use placeholders, commit values or log API
 payloads. Import must preserve the existing bytes. Reconcile a proposed value
 update before applying. Sensitive inputs redact ordinary output but remain in
-protected Terraform state; the GitHub objects remain Actions variables.
+protected Terraform state. The URL is a GitHub Actions secret so the runner masks
+it in logs. `ENDPOINT_ID` remains an Actions variable.
+
+Migrate the URL in this order: copy the exact existing variable value into the
+same-name encrypted secret without printing it; switch both manual workflow
+consumers to `secrets.PORTAINER_URL`; then remove the obsolete Actions variable.
+Keep the existing sensitive workspace input unchanged. GitHub cannot return a
+secret's plaintext, so importing its metadata does not recover or verify its
+value; preserve the original protected value and the transfer receipt.
+
+The secret uses the provider's `repository/secret_name` import format. The
+`removed` block forgets the old variable state entry without destroying a remote
+object. It prevents a later apply from recreating the unmasked variable. Review
+the full plan before applying: only the old variable's state removal and the
+secret's import/value reconciliation belong to this migration. Do not apply an
+older configuration after removing the variable. Existing state snapshots and
+old workflow logs may still contain the URL and need separate retention review.
 
 ## Existing webhook
 
