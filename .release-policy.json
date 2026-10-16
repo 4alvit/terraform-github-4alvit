@@ -2,7 +2,11 @@
   "repository": "4alvit/terraform-github-4alvit",
   "mode": "validation-only",
   "default_branch": "main",
-  "validation_workflows": ["validate.yml", "codeql.yml", "dependency-review.yml"],
+  "validation_workflows": [
+    "validate.yml",
+    "codeql.yml",
+    "dependency-review.yml"
+  ],
   "local_checks": [
     "bash scripts/ci.sh"
   ],
@@ -15,7 +19,8 @@
     "stacks/oci-alvit-repository",
     "stacks/inverter-climate-repository",
     "stacks/claude-harness-repository",
-    "stacks/ruview-home-sensing-repository"
+    "stacks/ruview-home-sensing-repository",
+    "stacks/private-repository-01"
   ],
   "syntax_exclude": [
     "inventory",
