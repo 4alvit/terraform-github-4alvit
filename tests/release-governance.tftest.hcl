@@ -1,9 +1,7 @@
 # Every run is a plan against a mocked provider in a disposable standalone copy.
 variables {
-  portainer_actions_endpoint_id = "1"
-  portainer_actions_url         = "https://portainer.example.invalid"
   portainer_push_webhook_url    = "https://webhook.example.invalid/webhook"
-  portainer_push_webhook_secret = "mock-only-hmac-fixture"
+  portainer_push_webhook_secret = "mock-only-hmac-fixture-at-least-32-bytes"
 }
 
 mock_provider "github" {
@@ -231,4 +229,16 @@ run "unselected_public_ci_preserves_existing_bypass" {
     )
     error_message = "State reconciliation must not activate deferred bypass changes."
   }
+}
+
+run "reject_short_webhook_secret" {
+  command = plan
+  variables { portainer_push_webhook_secret = "short-test-secret" }
+  expect_failures = [var.portainer_push_webhook_secret]
+}
+
+run "reject_plaintext_webhook" {
+  command = plan
+  variables { portainer_push_webhook_url = "http://webhook.example.invalid/webhook" }
+  expect_failures = [var.portainer_push_webhook_url]
 }

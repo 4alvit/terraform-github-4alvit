@@ -60,33 +60,6 @@ import {
 # The existing receiver is Portainer stack 28 (github-deploy-webhook), owned by
 # HCP workspace portainer-github-deploy-webhook. Reuse its live WEBHOOK_SECRET;
 # this workspace owns the GitHub webhook object, not the receiver deployment.
-variable "portainer_push_webhook_url" {
-  description = "Exact existing endpoint of terraform-portainer-synology webhook 675888988"
-  type        = string
-  sensitive   = true
-  nullable    = false
-
-  validation {
-    condition     = length(trimspace(var.portainer_push_webhook_url)) > 0
-    error_message = "Supply the existing webhook endpoint through a sensitive workspace input."
-  }
-}
-
-variable "portainer_push_webhook_secret" {
-  description = "Existing live WEBHOOK_SECRET from the github-deploy-webhook receiver; do not rotate during import"
-  type        = string
-  sensitive   = true
-  nullable    = false
-
-  validation {
-    condition = (
-      length(trimspace(var.portainer_push_webhook_secret)) > 0 &&
-      !can(regex("^\\*+$", var.portainer_push_webhook_secret))
-    )
-    error_message = "Supply the original receiver HMAC secret, not an empty value or an API mask."
-  }
-}
-
 # Keep webhook credentials separate from the repository-management token,
 # whose current fine-grained permissions cannot read this private hook.
 variable "github_webhook_token" {
