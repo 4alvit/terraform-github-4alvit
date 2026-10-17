@@ -54,7 +54,7 @@ import {
 
 import {
   to = github_actions_secret.portainer_url
-  id = "terraform-portainer-synology/PORTAINER_URL"
+  id = "terraform-portainer-synology:PORTAINER_URL"
 }
 
 # The existing receiver is Portainer stack 28 (github-deploy-webhook), owned by
