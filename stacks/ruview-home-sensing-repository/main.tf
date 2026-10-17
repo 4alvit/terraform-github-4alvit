@@ -62,6 +62,30 @@ resource "github_repository_dependabot_security_updates" "ruview" {
   depends_on = [github_repository_vulnerability_alerts.ruview]
 }
 
+# Keep routing in the same state as the repository. The two labels select
+# separately qualified CPU architectures; they do not register runners.
+variable "ci_runner_mode" {
+  type        = string
+  default     = "self-hosted"
+  description = "RuView CI runner profile; github restores GitHub-hosted compute."
+
+  validation {
+    condition     = contains(["github", "self-hosted", "k3s"], var.ci_runner_mode)
+    error_message = "Use github, self-hosted, or the compatible k3s alias."
+  }
+}
+
+resource "github_actions_variable" "runner" {
+  for_each = {
+    CI_RUNNER_MODE         = var.ci_runner_mode
+    CI_RUNNER_LABELS       = jsonencode(["self-hosted", "Linux", "X64", "ruview-ci"])
+    CI_RUNNER_ARM64_LABELS = jsonencode(["self-hosted", "Linux", "ARM64", "ruview-ci"])
+  }
+  repository    = github_repository.ruview.name
+  variable_name = each.key
+  value         = each.value
+}
+
 output "repository_url" {
   value = github_repository.ruview.html_url
 }
