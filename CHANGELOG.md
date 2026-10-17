@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## [0.2.0] - 2026-10-17
 
 ### Security
 
@@ -9,8 +9,16 @@
 
 ### Changed
 
+- Require one approving review while preserving stale-review dismissal, CI requirements and existing resource identities.
+- Preserve existing GitHub policy during state reconciliation, keep private integration inputs protected, and manage the deployment endpoint as an Actions secret.
+- Persist the EPG Actions approval policy and correct the provider import identifier for the existing endpoint secret.
+
 - Document the verified strict Terraform/provider TLS profile and source-release scope.
 - Add governance, conduct and a one-year roadmap without changing live infrastructure.
+
+### Upgrade
+
+This is a source-only release with governance and state-management changes, not an applied infrastructure plan. Review the changes from 0.1.0 before using the configuration. Preserve the existing state and workspace bindings; import or forget only the explicitly reviewed resource identities, and inspect a fresh state-aware plan before any apply. Never apply this source against an empty replacement state. Where documented, run the review-policy reconciliation command after Terraform to preserve the additional Copilot setting. The independently patched provider profile is opt-in and does not replace the official HCP provider automatically. Keep the prior source tag and a protected state backup for rollback.
 
 ## [0.1.0] - 2026-10-08
 
