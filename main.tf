@@ -581,6 +581,7 @@ resource "github_repository_ruleset" "default" {
 resource "github_repository_collaborator" "automation_bot" {
   for_each = toset([
     "4alvit",
+    "alvit-meet",
     "amazon-echo-home-voice",
     "dbus-service-template",
     "default",
@@ -590,7 +591,9 @@ resource "github_repository_collaborator" "automation_bot" {
     "fastapi-mqtt-gateway",
     "github-deploy-webhook",
     "google-home-voice-stats",
+    "home-assistant",
     "home-assistant-k3s",
+    "house-fiber-atlas",
     "iot-project-builder-profile",
     "k3s-self-healing",
     "mcp-venus-os",
