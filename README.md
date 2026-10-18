@@ -135,3 +135,17 @@ See the [supported TLS profile](docs/TLS_PROFILE.md), [assessment evidence](docs
 [![OpenSSF Best Practices](https://www.bestpractices.dev/projects/15574/badge)](https://www.bestpractices.dev/projects/15574)
 
 The [disclosed secure-provider profile](docs/SECURE_PROVIDER.md) builds a reviewed patched GitHub provider, validates an isolated source copy and supports a guarded independent local deployment with OpenTofu; production locks and state are not automatically changed. The [engine advisory assessment](docs/OPENTOFU_ADVISORIES.md) is dated and scoped.
+
+### Explicit private-repository reviewer grants
+
+The owner approved `californiantiramisu` collaborator access only to
+`house-fiber-atlas`, `alvit-meet` and `home-assistant` for the remaining private
+runner review PRs. The existing `automation_bot` resource records `push` access
+for those three repositories, and explicit import blocks adopt the already
+accepted invitations. This change neither creates repositories nor grants
+organization membership, administration, or access to additional repositories.
+
+GitHub personal repositories do not offer a read-only collaborator role; the
+owner approved the actual write scope before the invitations were issued.
+Existing grants are imported through the canonical owner workspace. Review
+the plan and keep unrelated infrastructure changes outside this adoption.
