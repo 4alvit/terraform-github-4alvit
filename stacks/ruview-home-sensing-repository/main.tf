@@ -70,8 +70,8 @@ resource "github_repository_dependabot_security_updates" "ruview" {
   depends_on = [github_repository_vulnerability_alerts.ruview]
 }
 
-# Keep routing in the same state as the repository. The two labels select
-# separately qualified CPU architectures; they do not register runners.
+# Keep routing in the same state as the repository. Each scale set executes one
+# job per disposable pod; CI and metadata have separate runner identities.
 variable "ci_runner_mode" {
   type        = string
   default     = "self-hosted"
@@ -83,12 +83,17 @@ variable "ci_runner_mode" {
   }
 }
 
+locals {
+  # Matches the private ARC fleet renderer; no registration data is stored here.
+  runner_pool_prefix = "private-${substr(sha256("4alvit/ruview-home-sensing"), 0, 12)}"
+}
+
 resource "github_actions_variable" "runner" {
   for_each = {
     CI_RUNNER_MODE              = var.ci_runner_mode
-    CI_RUNNER_LABELS            = jsonencode(["self-hosted", "Linux", "X64", "ruview-ci"])
-    CI_RUNNER_ARM64_LABELS      = jsonencode(["self-hosted", "Linux", "ARM64", "ruview-ci"])
-    CI_RUNNER_AUTOMATION_LABELS = jsonencode(["self-hosted", "Linux", "X64", "k3s", "ruview-metadata"])
+    CI_RUNNER_LABELS            = jsonencode(["${local.runner_pool_prefix}-ci"])
+    CI_RUNNER_ARM64_LABELS      = jsonencode(["${local.runner_pool_prefix}-arm64"])
+    CI_RUNNER_AUTOMATION_LABELS = jsonencode(["${local.runner_pool_prefix}-automation"])
   }
   repository    = github_repository.ruview.name
   variable_name = each.key
