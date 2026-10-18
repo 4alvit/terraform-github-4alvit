@@ -6,4 +6,5 @@ python3 scripts/validate-terraform.py
 bash scripts/test-release-governance.sh
 python3 scripts/test-github-owner.py
 bash scripts/test-public-security.sh
+bash scripts/test-runner-routing.sh
 tflint --config="$PWD/.tflint.hcl" --recursive
