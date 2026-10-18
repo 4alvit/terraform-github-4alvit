@@ -52,9 +52,11 @@ it takes precedence in the long-running RuView validation job.
 
 To switch to GitHub-hosted compute, prepare a complete saved plan in this root
 with `-var='ci_runner_mode=github'`, review it, and apply those saved bytes. To
-switch back, repeat with `-var='ci_runner_mode=self-hosted'`. Set the same value
-in the workspace inputs used by subsequent runs; a one-time command-line
-variable does not change the workspace's future defaults. Keep the pool labels
+switch back, repeat with `-var='ci_runner_mode=self-hosted'`. Keep the selected value in a protected operator `.tfvars` file, explicitly
+passed with `-var-file` on subsequent local CLI runs, or change the reviewed
+configuration default. This HCP workspace uses local execution; HCP workspace
+variables are not automatically loaded by the local Terraform CLI. A one-time
+command-line variable does not change future defaults. Keep the pool labels
 unchanged in hosted mode. Start a new workflow after the change; an already
 queued job is not moved automatically. The public Terraform repository's own
 workflows remain on GitHub-hosted runners.
