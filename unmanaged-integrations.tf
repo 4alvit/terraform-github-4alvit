@@ -77,8 +77,8 @@ provider "github" {
 
 resource "github_repository_webhook" "portainer_push" {
   provider   = github.webhook
-  repository = module.repos["terraform_portainer_synology"].repository.name
-  active     = true
+  repository = "terraform-portainer-synology"
+  active     = false
   events     = ["push"]
 
   configuration {
