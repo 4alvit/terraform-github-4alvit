@@ -11,7 +11,7 @@ if [[ -f .terraform.lock.hcl ]]; then
   cp .terraform.lock.hcl "$temporary/"
 fi
 test_terraform() {
-  env -i PATH="$PATH" HOME="$temporary" TF_IN_AUTOMATION=1 TF_INPUT=0 \
+  env -i PATH="$PATH" HOME="$HOME" TF_IN_AUTOMATION=1 TF_INPUT=0 \
     TF_CLI_CONFIG_FILE="$temporary/empty.tfrc" TF_PLUGIN_CACHE_DIR="$temporary/provider-cache" \
     terraform -chdir="$temporary" "$@"
 }
