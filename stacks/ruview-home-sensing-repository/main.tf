@@ -56,6 +56,14 @@ resource "github_repository_vulnerability_alerts" "ruview" {
   repository = github_repository.ruview.name
 }
 
+# Permit the shared reviewer fallback for bot-authored pull requests without
+# giving ordinary workflow tokens write access to repository contents.
+resource "github_workflow_repository_permissions" "ruview" {
+  repository                       = github_repository.ruview.name
+  default_workflow_permissions     = "read"
+  can_approve_pull_request_reviews = true
+}
+
 resource "github_repository_dependabot_security_updates" "ruview" {
   repository = github_repository.ruview.id
   enabled    = true
@@ -77,9 +85,10 @@ variable "ci_runner_mode" {
 
 resource "github_actions_variable" "runner" {
   for_each = {
-    CI_RUNNER_MODE         = var.ci_runner_mode
-    CI_RUNNER_LABELS       = jsonencode(["self-hosted", "Linux", "X64", "ruview-ci"])
-    CI_RUNNER_ARM64_LABELS = jsonencode(["self-hosted", "Linux", "ARM64", "ruview-ci"])
+    CI_RUNNER_MODE              = var.ci_runner_mode
+    CI_RUNNER_LABELS            = jsonencode(["self-hosted", "Linux", "X64", "ruview-ci"])
+    CI_RUNNER_ARM64_LABELS      = jsonencode(["self-hosted", "Linux", "ARM64", "ruview-ci"])
+    CI_RUNNER_AUTOMATION_LABELS = jsonencode(["self-hosted", "Linux", "X64", "k3s", "ruview-metadata"])
   }
   repository    = github_repository.ruview.name
   variable_name = each.key
