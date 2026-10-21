@@ -42,6 +42,10 @@ Set these in Terraform Cloud workspace variables:
 
 ### Public repositories
 
+The [iOS product onboarding declaration](docs/ios-products.md) provisions three
+original local-first apps: `room-inventory-ios`, `document-sanitizer-ios`, and
+`travel-documents-ios`. All three share this root's canonical state ownership.
+
 The public catalog is grouped by purpose. Repository contents and deployments
 remain the responsibility of their own projects:
 
