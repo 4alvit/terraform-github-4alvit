@@ -16,6 +16,29 @@ separately through GitHub's repository API; the pinned Terraform provider does
 not expose that setting. Verify it under repository security settings during
 onboarding. Do not put a credential in a commit to test push protection.
 
+## Retired HACS submission fork
+
+`4alvit/default` is retired from the active public-software inventory and the
+`automation_bot` collaborator set. The DESLOC integration and card submissions
+are merged in the official HACS catalog ([integration #11471](https://github.com/hacs/default/pull/11471),
+[card #11473](https://github.com/hacs/default/pull/11473)). Their releases and
+updates come from `ha-homelab/ha-desloc` and `ha-homelab/ha-desloc-card`; the
+submission fork is not a distribution dependency.
+
+Close the fork's remaining maintenance PRs and preserve its Git refs before
+archiving it. Review and apply this inventory cleanup in the canonical workspace
+while the fork is still writable: it removes the fork's managed automation-bot
+grant and any managed `public_review` instance, without deleting the repository
+or changing active projects. Then archive `4alvit/default` through GitHub and
+verify the archive state and absence of active automation. The repository itself
+is not managed by this Terraform configuration. Keep the archive and its unique
+commits for history; deleting the fork is not part of this retirement.
+
+A stale `public_security_enforcement_repositories` value cannot reintroduce the
+fork because it is no longer eligible for metadata lookup or enforcement.
+To resume development later, explicitly unarchive the fork and restore only the
+reviewed inventory entries and collaborator grant through a new plan.
+
 ## Rollout and state ownership
 
 The selected incremental change enables `dismiss_stale_reviews_on_push` on
