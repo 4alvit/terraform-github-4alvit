@@ -7,7 +7,6 @@ resource "github_repository_collaborator" "automation_bot" {
     "amazon-echo-home-voice",
     "cisco-home-telephony",
     "dbus-service-template",
-    "default",
     "demo",
     "energy-data-rag-pipeline",
     "esphome-ble-sensor-patterns",

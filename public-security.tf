@@ -10,7 +10,6 @@ locals {
   public_software_repositories = toset([
     "amazon-echo-home-voice",
     "dbus-service-template",
-    "default",
     "energy-data-rag-pipeline",
     "esphome-ble-sensor-patterns",
     "fastapi-mqtt-gateway",
@@ -26,7 +25,6 @@ locals {
   ])
   public_missing_review_repositories = toset([
     "amazon-echo-home-voice",
-    "default",
     "google-home-voice-stats"
   ])
 }
