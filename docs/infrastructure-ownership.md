@@ -6,6 +6,10 @@ GitHub resources. Organization workspaces own their respective organization
 resources; the personal repositories containing their Terraform code belong to
 the personal-account configuration.
 
+The existing public Cisco application has a narrowly scoped
+[CI and review ruleset](cisco-ci-governance.md) in this canonical workspace.
+Activate it only after its always-emitted checks have been verified.
+
 ## Separate roots
 
 Each independent repository root must remain the sole state owner of the remote
