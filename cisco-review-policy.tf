@@ -5,6 +5,8 @@ data "github_repository" "cisco_home_telephony" {
 }
 
 resource "github_repository_ruleset" "cisco_main" {
+  depends_on = [github_repository_collaborator.automation_bot["cisco-home-telephony"]]
+
   name        = "Cisco required CI and review"
   repository  = data.github_repository.cisco_home_telephony.name
   target      = "branch"

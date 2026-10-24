@@ -17,6 +17,14 @@ run "one_current_review_and_actual_ci_without_bypass" {
   command = plan
   assert {
     condition = (
+      github_repository_collaborator.automation_bot["cisco-home-telephony"].repository == "cisco-home-telephony" &&
+      github_repository_collaborator.automation_bot["cisco-home-telephony"].username == "californiantiramisu" &&
+      github_repository_collaborator.automation_bot["cisco-home-telephony"].permission == "push"
+    )
+    error_message = "The existing automation account needs write access for its approval to satisfy branch protection."
+  }
+  assert {
+    condition = (
       github_repository_ruleset.cisco_main.repository == "cisco-home-telephony" &&
       github_repository_ruleset.cisco_main.target == "branch" &&
       github_repository_ruleset.cisco_main.enforcement == "active" &&

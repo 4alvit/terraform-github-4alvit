@@ -5,7 +5,7 @@ temporary=$(mktemp -d "${TMPDIR:-/tmp}/cisco-governance-test.XXXXXX")
 trap 'rm -rf "$temporary"' EXIT
 mkdir -p "$temporary/tests" "$temporary/provider-cache"
 touch "$temporary/empty.tfrc"
-cp cisco-review-policy.tf "$temporary/"
+cp cisco-review-policy.tf automation-bot.tf "$temporary/"
 cp tests/public-security-main.tf.fixture "$temporary/main.tf"
 cp tests/cisco-governance.tftest.hcl "$temporary/tests/"
 cp .terraform.lock.hcl "$temporary/"
