@@ -51,7 +51,7 @@ Keep the existing sensitive workspace input unchanged. GitHub cannot return a
 secret's plaintext, so importing its metadata does not recover or verify its
 value; preserve the original protected value and the transfer receipt.
 
-The secret uses the provider's `repository/secret_name` import format. The
+The secret uses the provider's `repository:secret_name` import format. The
 `removed` block forgets the old variable state entry without destroying a remote
 object. It prevents a later apply from recreating the unmasked variable. Review
 the full plan before applying: only the old variable's state removal and the
@@ -61,9 +61,10 @@ old workflow logs may still contain the URL and need separate retention review.
 
 ## Existing webhook
 
-`github_repository_webhook.portainer_push` adopts the configured existing hook,
-preserving its active `push` subscription, JSON payloads and TLS certificate
-verification. Supply its exact endpoint through `portainer_push_webhook_url` and
+`github_repository_webhook.portainer_push` keeps the existing hook disabled
+(`active = false`), preserving its `push` event subscription, JSON payloads and
+TLS certificate verification. Source pushes do not trigger this hook; deployment
+remains manual. Supply its exact endpoint through `portainer_push_webhook_url` and
 its existing receiver HMAC through `portainer_push_webhook_secret` in canonical
 HCP state. Use the `github.webhook` provider alias with the separate sensitive
 `github_webhook_token` input and the necessary repository Webhooks permission.
