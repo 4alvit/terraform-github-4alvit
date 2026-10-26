@@ -11,10 +11,10 @@ mock_provider "github" {
 run "review_requires_one_current_approval_without_bypass" {
   command = plan
   variables {
-    public_security_enforcement_repositories = ["amazon-echo-home-voice", "default", "google-home-voice-stats"]
+    public_security_enforcement_repositories = ["amazon-echo-home-voice", "google-home-voice-stats"]
   }
   assert {
-    condition     = length(github_repository_ruleset.public_review) == 3
+    condition     = length(github_repository_ruleset.public_review) == 2
     error_message = "Explicitly selected public repositories must receive review rules."
   }
   assert {
@@ -28,6 +28,29 @@ run "review_requires_one_current_approval_without_bypass" {
       )
     ])
     error_message = "New public review rules must have no administrator/bot bypass and require current reviews."
+  }
+}
+
+run "retired_hacs_fork_is_not_reactivated_by_stale_selection" {
+  command = plan
+  variables {
+    public_security_enforcement_repositories = ["default", "amazon-echo-home-voice"]
+  }
+  assert {
+    condition = (
+      !contains(keys(data.github_repository.public_software), "default") &&
+      !contains(keys(github_repository_ruleset.public_review), "default") &&
+      !contains(keys(github_repository_collaborator.automation_bot), "default")
+    )
+    error_message = "The retired HACS submission fork must not be queried or regain review automation or bot access."
+  }
+  assert {
+    condition = (
+      contains(keys(github_repository_ruleset.public_review), "amazon-echo-home-voice") &&
+      github_repository_collaborator.automation_bot["cisco-home-telephony"].permission == "push" &&
+      github_repository_collaborator.automation_bot["terraform-github-ha-homelab"].permission == "push"
+    )
+    error_message = "Retiring the HACS fork must preserve selected protections and existing automation access for active repositories."
   }
 }
 
