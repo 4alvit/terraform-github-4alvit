@@ -101,7 +101,7 @@ locals {
 
     dbus_service_template = {
       name        = "dbus-service-template"
-      description = "Production-ready Copier template for D-Bus services targeting Victron Venus OS"
+      description = "Python source generator for D-Bus services on Victron Venus OS, with MQTT integration, tests and native installation scaffolding"
       visibility  = "public"
       topics = [
         "cerbo-gx", "copier", "dbus", "template", "venus-os",
@@ -268,7 +268,7 @@ locals {
 
     terraform_synology_alvit = {
       name             = "terraform-synology-alvit"
-      description      = "Terraform for Synology DSM (DS620slim) — packages, File Station, tasks; Docker via Portainer TF"
+      description      = "Terraform for Synology DSM packages, File Station and tasks, with Docker stacks managed through Portainer"
       visibility       = "private"
       has_wiki         = false
       license_template = ""
@@ -538,6 +538,13 @@ resource "github_repository_ruleset" "default" {
       actor_type  = "Integration"
       bypass_mode = "always"
     }
+  }
+
+  # Owners may make an explicit emergency merge through an auditable PR.
+  bypass_actors {
+    actor_id    = local.owner_emergency_merge_actor.actor_id
+    actor_type  = local.owner_emergency_merge_actor.actor_type
+    bypass_mode = local.owner_emergency_merge_actor.bypass_mode
   }
 
   conditions {

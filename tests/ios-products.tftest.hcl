@@ -21,7 +21,15 @@ run "bootstrap_scope_and_protections" {
     condition = alltrue([
       for policy in github_repository_ruleset.ios_products_default : (
         policy.enforcement == "active" &&
-        length(policy.bypass_actors) == 0 &&
+        (
+          length([for actor in policy.bypass_actors : actor if actor.actor_type == local.owner_emergency_merge_actor.actor_type]) == 1 &&
+          alltrue([
+            for actor in policy.bypass_actors :
+            coalesce(actor.actor_id, 0) == coalesce(local.owner_emergency_merge_actor.actor_id, 0) && actor.bypass_mode == "pull_request"
+            if actor.actor_type == local.owner_emergency_merge_actor.actor_type
+          ]) &&
+          length([for actor in policy.bypass_actors : actor if actor.actor_type != local.owner_emergency_merge_actor.actor_type]) == 0
+        ) &&
         one(policy.rules).deletion &&
         one(policy.rules).non_fast_forward &&
         one(policy.rules).required_signatures &&
@@ -33,7 +41,7 @@ run "bootstrap_scope_and_protections" {
         length(one(policy.rules).required_code_scanning) == 0
       )
     ])
-    error_message = "Bootstrap needs current reviews and signatures without bypasses or missing workflow gates."
+    error_message = "Bootstrap needs current reviews and signatures with only the documented owner exception or missing workflow gates."
   }
   assert {
     condition = alltrue([

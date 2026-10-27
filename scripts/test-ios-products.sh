@@ -5,6 +5,7 @@ temporary=$(mktemp -d "${TMPDIR:-/tmp}/ios-products-test.XXXXXX")
 trap 'rm -rf "$temporary"' EXIT
 mkdir -p "$temporary/tests" "$temporary/modules" "$temporary/provider-cache"
 touch "$temporary/empty.tfrc"
+cp admin-merge-policy.tf "$temporary/"
 cp ios-products.tf providers.tf "$temporary/"
 cp -R modules/github_repo "$temporary/modules/"
 cp tests/ios-products.tftest.hcl "$temporary/tests/"
