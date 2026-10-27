@@ -70,3 +70,9 @@ read back the complete rule after applying it.
 `bash scripts/test-climate-governance.sh` exercises the actual independent root
 with a mocked provider, verifying both bypass actors, one review, strict CI,
 immutable tags and the existing release approval. It does not access live state.
+
+The governance test initializes with `-lockfile=readonly`. Keep checksums for both
+Linux runner architectures and the local Apple Silicon platform in the stack's
+lock file. When updating its provider, run `terraform providers lock
+-platform=linux_amd64 -platform=linux_arm64 -platform=darwin_arm64` in this
+directory and review the signed package identities before committing the lock.
