@@ -1,7 +1,7 @@
 # Public software explicitly audited for the OpenSSF rollout. Private and archived
 # repositories are excluded using live visibility before new rules are created.
 variable "public_security_enforcement_repositories" {
-  description = "Public repositories explicitly approved for new review rules and removal of existing bypasses after reviewer readiness is verified"
+  description = "Public repositories explicitly approved for new review rules and removal of legacy bypasses; owner emergency merges remain available after reviewer readiness is verified"
   type        = set(string)
   default     = []
 }
@@ -54,7 +54,14 @@ resource "github_repository_ruleset" "public_review" {
   repository  = each.value
   target      = "branch"
   enforcement = "active"
-  # Intentionally no bypass actors, including administrators and automation apps.
+  # The emergency owner exception below does not grant automation a bypass.
+  # Owners may make an explicit emergency merge through an auditable PR.
+  bypass_actors {
+    actor_id    = local.owner_emergency_merge_actor.actor_id
+    actor_type  = local.owner_emergency_merge_actor.actor_type
+    bypass_mode = local.owner_emergency_merge_actor.bypass_mode
+  }
+
   conditions {
     ref_name {
       include = ["~DEFAULT_BRANCH"]

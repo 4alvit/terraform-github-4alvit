@@ -13,7 +13,7 @@ variables {
   github_organization = "4alvit"
 }
 
-run "one_current_review_and_actual_ci_without_bypass" {
+run "one_current_review_and_actual_ci_with_owner_exception" {
   command = plan
   assert {
     condition = (
@@ -28,10 +28,18 @@ run "one_current_review_and_actual_ci_without_bypass" {
       github_repository_ruleset.cisco_main.repository == "cisco-home-telephony" &&
       github_repository_ruleset.cisco_main.target == "branch" &&
       github_repository_ruleset.cisco_main.enforcement == "active" &&
-      length(github_repository_ruleset.cisco_main.bypass_actors) == 0 &&
+      (
+        length([for actor in github_repository_ruleset.cisco_main.bypass_actors : actor if actor.actor_type == local.owner_emergency_merge_actor.actor_type]) == 1 &&
+        alltrue([
+          for actor in github_repository_ruleset.cisco_main.bypass_actors :
+          coalesce(actor.actor_id, 0) == coalesce(local.owner_emergency_merge_actor.actor_id, 0) && actor.bypass_mode == "pull_request"
+          if actor.actor_type == local.owner_emergency_merge_actor.actor_type
+        ]) &&
+        length([for actor in github_repository_ruleset.cisco_main.bypass_actors : actor if actor.actor_type != local.owner_emergency_merge_actor.actor_type]) == 0
+      ) &&
       one(one(github_repository_ruleset.cisco_main.conditions).ref_name).include == tolist(["~DEFAULT_BRANCH"])
     )
-    error_message = "Only the default branch of the existing Cisco repository is protected, without bypass actors."
+    error_message = "Only the default branch of the existing Cisco repository is protected, with the documented owner exception actors."
   }
   assert {
     condition = (

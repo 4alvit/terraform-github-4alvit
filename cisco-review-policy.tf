@@ -12,6 +12,13 @@ resource "github_repository_ruleset" "cisco_main" {
   target      = "branch"
   enforcement = "active"
   # No administrator or automation bypass: --auto must wait for actual checks.
+  # Owners may make an explicit emergency merge through an auditable PR.
+  bypass_actors {
+    actor_id    = local.owner_emergency_merge_actor.actor_id
+    actor_type  = local.owner_emergency_merge_actor.actor_type
+    bypass_mode = local.owner_emergency_merge_actor.bypass_mode
+  }
+
   conditions {
     ref_name {
       include = ["~DEFAULT_BRANCH"]

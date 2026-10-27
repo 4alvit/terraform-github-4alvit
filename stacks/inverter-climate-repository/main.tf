@@ -87,6 +87,13 @@ resource "github_repository_ruleset" "climate" {
   target      = "branch"
   enforcement = "active"
 
+  # Organization owners retain an auditable emergency PR merge path.
+  bypass_actors {
+    actor_id    = local.owner_emergency_merge_actor.actor_id
+    actor_type  = local.owner_emergency_merge_actor.actor_type
+    bypass_mode = local.owner_emergency_merge_actor.bypass_mode
+  }
+
   conditions {
     ref_name {
       include = ["~DEFAULT_BRANCH"]

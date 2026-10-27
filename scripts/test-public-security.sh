@@ -5,6 +5,7 @@ temporary=$(mktemp -d "${TMPDIR:-/tmp}/public-security-test.XXXXXX")
 trap 'rm -rf "$temporary"' EXIT
 mkdir -p "$temporary/tests" "$temporary/provider-cache"
 touch "$temporary/empty.tfrc"
+cp admin-merge-policy.tf "$temporary/"
 cp public-security.tf automation-bot.tf tests/public-security-main.tf.fixture "$temporary/"
 mv "$temporary/public-security-main.tf.fixture" "$temporary/main.tf"
 cp tests/public-security.tftest.hcl "$temporary/tests/"
