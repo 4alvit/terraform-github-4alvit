@@ -50,3 +50,23 @@ workflows do not deploy to the device.
 
 From the source repository root, `bash scripts/ci.sh` validates all Terraform
 roots in disposable copies without backend access.
+
+## Owner emergency merge policy
+
+The branch rule retains its existing repository-administrator (`RepositoryRole`,
+ID `5`) exception and adds organization owners (`OrganizationAdmin`). Both may
+bypass only through a pull request. Immutable version tags and release-environment
+approvals are unchanged. Record the reason and available validation in the PR
+when using the emergency path; ordinary merges must satisfy current reviews and CI.
+
+The 2026-10-27 state-aware plan found live review drift: zero approvals, no stale
+review dismissal and no last-push approval, although the versioned configuration
+requires one current independent review. The reviewed recovery restores those
+three declared values while preserving the existing administrator exception and
+strict `CI gate`. This is an intentional live `0` to `1` review restoration, not
+a claim that every live field was already identical. Verify the saved plan and
+read back the complete rule after applying it.
+
+`bash scripts/test-climate-governance.sh` exercises the actual independent root
+with a mocked provider, verifying both bypass actors, one review, strict CI,
+immutable tags and the existing release approval. It does not access live state.

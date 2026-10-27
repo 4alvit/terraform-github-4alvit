@@ -87,6 +87,14 @@ resource "github_repository_ruleset" "climate" {
   target      = "branch"
   enforcement = "active"
 
+  # Preserve the verified existing administrator exception during adoption.
+  # The additional organization-owner entry below does not remove this grant.
+  bypass_actors {
+    actor_id    = 5
+    actor_type  = "RepositoryRole"
+    bypass_mode = "pull_request"
+  }
+
   # Organization owners retain an auditable emergency PR merge path.
   bypass_actors {
     actor_id    = local.owner_emergency_merge_actor.actor_id
