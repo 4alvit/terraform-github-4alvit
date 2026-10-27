@@ -7,6 +7,7 @@ bash scripts/test-release-governance.sh
 python3 scripts/test-github-owner.py
 bash scripts/test-public-security.sh
 bash scripts/test-cisco-governance.sh
+bash scripts/test-epg-governance.sh
 bash scripts/test-ios-products.sh
 bash scripts/test-runner-routing.sh
 tflint --config="$PWD/.tflint.hcl" --recursive
