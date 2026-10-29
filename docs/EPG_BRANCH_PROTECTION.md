@@ -8,8 +8,8 @@ The previous classic rule required one approval and a strict `python` check from
 GitHub Actions (integration `15368`) on exact branch `main`. It blocked force
 pushes and deletion. Stale-review dismissal, CODEOWNERS approval, last-push
 approval, required signatures, and conversation resolution were disabled. The
-replacement keeps those choices, with the common owner-only, pull-request-only
-emergency exception from `admin-merge-policy.tf`.
+replacement keeps those choices, with the common owner-only, permanent branch
+exception from `admin-merge-policy.tf`.
 
 The migration completed on 2026-10-27. The replacement was verified while the
 classic rule remained active; only then was the classic rule removed. The steps
@@ -50,7 +50,7 @@ the current state. Keep the original state lineage, workspace, and execution mod
    replacement; it must not delete the old rule.
 4. Read back the active replacement and verify every setting above, especially
    integration ID `15368`, the exact `main` scope, supported merge methods, and
-   owner User ID `272257197` with `pull_request` bypass. GitHub can default the
+   owner User ID `272257197` with `always` bypass. GitHub can default the
    provider-unsupported `require_extra_approval_for_unattributed_changes` flag to
    `true`; use the [existing review-policy reconciliation helper](../scripts/reconcile-review-policy.py)
    to set it to `false`, preserving all other fields. Stop on any mismatch while

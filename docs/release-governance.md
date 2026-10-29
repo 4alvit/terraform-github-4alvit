@@ -21,7 +21,9 @@ a `pull_request` bypass on active public repositories. Administrators may
 explicitly override CI when merging a PR; ordinary merges still require a
 successful strict gate. This grant does not permit direct pushes and is not
 added to archived repositories. The separate default review ruleset and
-release-environment approval policy retain their existing settings.
+release-environment approval policy retain their existing settings. The separate
+declared-owner grant uses `always`, permitting direct updates and history repair
+for `4alvit` while this repository-role exception remains limited to PRs.
 
 This workspace manages the `4alvit` account. Organization repositories use their
 own canonical workspaces in `terraform-github-victron` and

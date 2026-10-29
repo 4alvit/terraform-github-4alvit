@@ -10,6 +10,7 @@ python3 -m unittest discover -s tests -p test_reconcile_branch_cleanup.py
 bash scripts/test-public-security.sh
 bash scripts/test-cisco-governance.sh
 bash scripts/test-epg-governance.sh
+bash scripts/test-speeddial-governance.sh
 bash scripts/test-ios-products.sh
 bash scripts/test-runner-routing.sh
 bash scripts/test-climate-governance.sh

@@ -54,10 +54,11 @@ roots in disposable copies without backend access.
 ## Owner emergency merge policy
 
 The branch rule retains its existing repository-administrator (`RepositoryRole`,
-ID `5`) exception and adds organization owners (`OrganizationAdmin`). Both may
-bypass only through a pull request. Immutable version tags and release-environment
-approvals are unchanged. Record the reason and available validation in the PR
-when using the emergency path; ordinary merges must satisfy current reviews and CI.
+ID `5`) exception through pull requests. Organization owners (`OrganizationAdmin`)
+have permanent branch bypass, including direct pushes and history repair.
+Immutable version tags and release-environment approvals are unchanged. Record
+the reason and available validation when using the owner exception; other actors
+retain their existing review and CI requirements.
 
 The 2026-10-27 state-aware plan found live review drift: zero approvals, no stale
 review dismissal and no last-push approval, although the versioned configuration
