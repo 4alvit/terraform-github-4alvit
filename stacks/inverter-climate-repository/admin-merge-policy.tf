@@ -1,10 +1,10 @@
-# Emergency merges retain the pull request and its audit trail. Existing review,
-# CI, signature, history and automation policies are unchanged for normal merges.
-# This actor is intentionally narrower than the repository-administrator role.
+# The declared owner may bypass branch rules for direct updates and history repair.
+# Review, CI, signature and history rules continue to apply to other actors.
+# Existing tag protections and deployment approvals are unchanged.
 locals {
   owner_emergency_merge_actor = {
     actor_id    = null
     actor_type  = "OrganizationAdmin"
-    bypass_mode = "pull_request"
+    bypass_mode = "always"
   }
 }

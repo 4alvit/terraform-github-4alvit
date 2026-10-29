@@ -147,3 +147,9 @@ import {
   to = github_repository_ruleset.default["terraform-github-open-ott-play"]
   id = "terraform-github-open-ott-play:21269604"
 }
+
+# Adopt the existing Speed Dial main policy without copying imports into mock fixtures.
+import {
+  to = github_repository_ruleset.speeddial_main
+  id = "speeddial:25988957"
+}

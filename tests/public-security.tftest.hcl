@@ -24,7 +24,7 @@ run "review_requires_one_current_approval_with_owner_exception" {
           length([for actor in policy.bypass_actors : actor if actor.actor_type == local.owner_emergency_merge_actor.actor_type]) == 1 &&
           alltrue([
             for actor in policy.bypass_actors :
-            coalesce(actor.actor_id, 0) == coalesce(local.owner_emergency_merge_actor.actor_id, 0) && actor.bypass_mode == "pull_request"
+            coalesce(actor.actor_id, 0) == coalesce(local.owner_emergency_merge_actor.actor_id, 0) && actor.bypass_mode == "always"
             if actor.actor_type == local.owner_emergency_merge_actor.actor_type
           ]) &&
           length([for actor in policy.bypass_actors : actor if actor.actor_type != local.owner_emergency_merge_actor.actor_type]) == 0
@@ -106,14 +106,14 @@ run "reconciliation_preserves_existing_governance" {
   }
 }
 
-run "emergency_merge_is_limited_to_the_owner_and_pull_requests" {
+run "branch_bypass_is_limited_to_the_declared_owner" {
   command = plan
   assert {
     condition = (
       local.owner_emergency_merge_actor.actor_type == "User" &&
       local.owner_emergency_merge_actor.actor_id == 272257197 &&
-      local.owner_emergency_merge_actor.bypass_mode == "pull_request"
+      local.owner_emergency_merge_actor.bypass_mode == "always"
     )
-    error_message = "Only the declared owner may use the emergency PR exception; repository roles, automation and direct pushes are not added."
+    error_message = "Only the declared owner receives permanent branch bypass; repository roles and automation retain their existing privileges."
   }
 }

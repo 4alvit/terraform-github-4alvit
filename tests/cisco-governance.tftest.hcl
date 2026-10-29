@@ -32,7 +32,7 @@ run "one_current_review_and_actual_ci_with_owner_exception" {
         length([for actor in github_repository_ruleset.cisco_main.bypass_actors : actor if actor.actor_type == local.owner_emergency_merge_actor.actor_type]) == 1 &&
         alltrue([
           for actor in github_repository_ruleset.cisco_main.bypass_actors :
-          coalesce(actor.actor_id, 0) == coalesce(local.owner_emergency_merge_actor.actor_id, 0) && actor.bypass_mode == "pull_request"
+          coalesce(actor.actor_id, 0) == coalesce(local.owner_emergency_merge_actor.actor_id, 0) && actor.bypass_mode == "always"
           if actor.actor_type == local.owner_emergency_merge_actor.actor_type
         ]) &&
         length([for actor in github_repository_ruleset.cisco_main.bypass_actors : actor if actor.actor_type != local.owner_emergency_merge_actor.actor_type]) == 0
