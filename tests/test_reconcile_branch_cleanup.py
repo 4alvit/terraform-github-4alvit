@@ -270,6 +270,36 @@ class ReconcileTests(unittest.TestCase):
         ):
             api.pages("user/repos")
 
+    def test_gh_success_preserves_output_and_uses_finite_timeout(self):
+        result = cleanup.subprocess.CompletedProcess(
+            ["gh", "api", "user"], 0, stdout='{"login":"alice"}\n', stderr=""
+        )
+        with patch.object(cleanup.subprocess, "run", return_value=result) as run:
+            self.assertEqual(cleanup.GitHub._gh(["api", "user"]), result.stdout)
+        run.assert_called_once_with(
+            ["gh", "api", "user"],
+            capture_output=True,
+            text=True,
+            check=False,
+            timeout=180,
+        )
+
+    def test_gh_timeout_is_sanitized_and_receipt_excludes_partial_output(self):
+        error = cleanup.subprocess.TimeoutExpired(
+            ["gh", "private-command-argument"],
+            180,
+            output=b"private-partial-token",
+            stderr=b"private-partial-diagnostic",
+        )
+        with patch.object(cleanup.subprocess, "run", side_effect=error) as run:
+            self.assertEqual(self.invoke(cleanup.GitHub()), 2)
+        self.assertEqual(run.call_args.kwargs["timeout"], 180)
+        self.assertEqual(self.receipt["error"], "gh_request_timeout")
+        serialized = json.dumps(self.receipt) + json.dumps(self.summary)
+        self.assertNotIn("private-command-argument", serialized)
+        self.assertNotIn("private-partial-token", serialized)
+        self.assertNotIn("private-partial-diagnostic", serialized)
+
 
 if __name__ == "__main__":
     unittest.main()

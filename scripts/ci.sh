@@ -7,6 +7,7 @@ bash scripts/test-release-governance.sh
 python3 scripts/test-github-owner.py
 python3 scripts/test-branch-cleanup.py
 python3 -m unittest discover -s tests -p test_reconcile_branch_cleanup.py
+python3 -m unittest discover -s tests -p test_branch_cleanup_discovery.py
 bash scripts/test-public-security.sh
 bash scripts/test-cisco-governance.sh
 bash scripts/test-epg-governance.sh

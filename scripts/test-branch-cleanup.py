@@ -15,6 +15,106 @@ ROOT = Path(__file__).resolve().parents[1]
 MODULE = Path("modules/github_repo")
 
 
+def repository_resources(source):
+    """Find top-level resource headers, excluding HCL comments and templates."""
+    length = len(source)
+
+    def comment_end(index):
+        if source.startswith("/*", index):
+            end = source.find("*/", index + 2)
+            if end < 0:
+                raise ValueError("Unterminated HCL block comment")
+            return end + 2
+        end = source.find("\n", index)
+        return length if end < 0 else end
+
+    def heredoc_end(index):
+        header = re.match(r"<<-?([^\s]+)[ \t]*\r?\n", source[index:])
+        if not header:
+            raise ValueError("Invalid HCL heredoc header")
+        marker = re.escape(header.group(1))
+        start = index + header.end()
+        end = re.search(
+            r"^[ \t]*" + marker + r"[ \t]*\r?$", source[start:], re.MULTILINE
+        )
+        if not end:
+            raise ValueError("Unterminated HCL heredoc")
+        return start + end.end()
+
+    def string_end(index):
+        index += 1
+        while index < length:
+            if source[index] == "\\":
+                index += 2
+            elif source.startswith(("$${", "%%{"), index):
+                index += 3
+            elif source.startswith(("${", "%{"), index):
+                index = interpolation_end(index + 2)
+            elif source[index] == '"':
+                return index + 1
+            else:
+                index += 1
+        raise ValueError("Unterminated HCL quoted string")
+
+    def interpolation_end(index):
+        depth = 1
+        while index < length:
+            if source.startswith(("/*", "//", "#"), index):
+                index = comment_end(index)
+            elif source.startswith("<<", index):
+                index = heredoc_end(index)
+            elif source[index] == '"':
+                index = string_end(index)
+            else:
+                depth += (source[index] == "{") - (source[index] == "}")
+                index += 1
+                if depth == 0:
+                    return index
+        raise ValueError("Unterminated HCL template interpolation")
+
+    tokens = []
+    index = 0
+    while index < length:
+        if source[index].isspace():
+            index += 1
+        elif source.startswith(("/*", "//", "#"), index):
+            index = comment_end(index)
+        elif source.startswith("<<", index):
+            index = heredoc_end(index)
+        elif source[index] == '"':
+            end = string_end(index)
+            try:
+                label = json.loads(source[index:end])
+            except json.JSONDecodeError:
+                label = None  # Templates are expressions, not resource labels.
+            tokens.append(("string", label))
+            index = end
+        else:
+            identifier = re.match(r"[\w-]+", source[index:])
+            if identifier:
+                tokens.append(("identifier", identifier.group()))
+                index += identifier.end()
+            else:
+                tokens.append((source[index], source[index]))
+                index += 1
+
+    resources = []
+    depth = 0
+    for index, token in enumerate(tokens):
+        if depth == 0 and token == ("identifier", "resource"):
+            header = tokens[index + 1 : index + 4]
+            if (
+                len(header) == 3
+                and header[0] == ("string", "github_repository")
+                and header[1][0] == "string"
+                and isinstance(header[1][1], str)
+                and header[2][0] == "{"
+            ):
+                resources.append(header[1][1])
+        depth += (token[0] == "{") - (token[0] == "}")
+    return resources
+
+
 def repository_scopes():
     """Discover every source repository resource, including independent stacks."""
     names = (
@@ -32,11 +132,7 @@ def repository_scopes():
         source = ROOT / name
         if source.suffix != ".tf" or not source.is_file() or source.is_symlink():
             continue
-        resources = re.findall(
-            r'^\s*resource\s+"github_repository"\s+"([\w-]+)"\s*\{',
-            source.read_text(),
-            flags=re.MULTILINE,
-        )
+        resources = repository_resources(source.read_text())
         if not resources:
             continue
         scope = Path(name).parent

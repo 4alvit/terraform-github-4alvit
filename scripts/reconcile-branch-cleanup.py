@@ -32,9 +32,12 @@ class GitHub:
 
     @staticmethod
     def _gh(args):
-        result = subprocess.run(
-            ["gh", *args], capture_output=True, text=True, check=False
-        )
+        try:
+            result = subprocess.run(
+                ["gh", *args], capture_output=True, text=True, check=False, timeout=180
+            )
+        except subprocess.TimeoutExpired:
+            raise APIError("gh_request_timeout") from None
         if result.returncode:
             raise APIError("gh_request_failed")
         return result.stdout
