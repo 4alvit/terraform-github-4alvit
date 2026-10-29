@@ -322,7 +322,8 @@ module "repos" {
   has_wiki        = try(each.value.has_wiki, true)
   has_discussions = try(each.value.has_discussions, false)
 
-  allow_auto_merge = try(each.value.allow_auto_merge, true)
+  allow_auto_merge       = try(each.value.allow_auto_merge, true)
+  delete_branch_on_merge = true
 
   topics           = each.value.topics
   license_template = try(each.value.license_template, "mit")

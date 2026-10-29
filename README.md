@@ -82,6 +82,11 @@ coverage. Reconcile authorized live inventory with each state before adoption.
 - Vulnerability alerts (`github_repository_vulnerability_alerts`)
 - Dependabot security updates (`github_repository_dependabot_security_updates`)
 
+### Merged-branch cleanup
+
+All managed repository resources enable automatic deletion of merged branches.
+See [the policy, regression check, and state-ownership limits](docs/merged-branch-cleanup.md).
+
 ## Usage
 
 ```bash
