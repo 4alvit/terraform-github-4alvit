@@ -2,7 +2,7 @@
 
 The canonical personal-account state adopts only the existing
 `4alvit/speeddial` ruleset `25988957`, named **Public main review and CI**.
-The declarative import in `speeddial-owner-policy.tf` uses
+The declarative import in `imports.tf` uses
 `speeddial:25988957`; it does not create a second policy or import the repository.
 
 The API baseline verified on 2026-10-29 targets exactly `refs/heads/main`, with
