@@ -27,6 +27,7 @@ module "ios_products" {
   has_projects           = false
   has_wiki               = false
   allow_auto_merge       = true
+  delete_branch_on_merge = true
   license_template       = "mit"
   enable_public_security = true
   topics                 = each.value.topics

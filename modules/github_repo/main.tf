@@ -55,8 +55,15 @@ variable "allow_auto_merge" {
 }
 
 variable "delete_branch_on_merge" {
-  type    = bool
-  default = true
+  description = "Delete merged pull-request branches; required for every managed repository."
+  type        = bool
+  default     = true
+  nullable    = false
+
+  validation {
+    condition     = var.delete_branch_on_merge
+    error_message = "Managed repositories must keep automatic merged-branch deletion enabled."
+  }
 }
 
 variable "topics" {
