@@ -9,7 +9,7 @@ import stat
 import tempfile
 import unittest
 from pathlib import Path
-from unittest.mock import Mock, patch
+from unittest.mock import Mock, call, patch
 from urllib.error import HTTPError
 
 SOURCE = Path(__file__).resolve().parents[1] / "scripts/reconcile-branch-cleanup.py"
@@ -222,8 +222,40 @@ class ReconcileTests(unittest.TestCase):
             self.assertRaisesRegex(cleanup.APIError, "write_identity_mismatch"),
         ):
             api.patch("repos/alice/example", {"delete_branch_on_merge": True})
-        http.assert_called_once_with("user")
+        http.assert_called_once_with("user", token="test-credential")
         self.assertIsNone(api._token)
+
+    def test_failed_identity_request_does_not_authorize_next_repository(self):
+        api = cleanup.GitHub()
+        api.login = "alice"
+        with (
+            patch.dict(os.environ, {"GH_TOKEN": "test-credential"}),
+            patch.object(
+                api,
+                "_http",
+                side_effect=[
+                    cleanup.APIError("request_outcome_unknown"),
+                    {"login": "alice"},
+                    {"delete_branch_on_merge": True},
+                ],
+            ) as http,
+        ):
+            with self.assertRaisesRegex(cleanup.APIError, "request_outcome_unknown"):
+                api.patch("repos/alice/first", {"delete_branch_on_merge": True})
+            self.assertIsNone(api._token)
+            api.patch("repos/alice/second", {"delete_branch_on_merge": True})
+        self.assertEqual(
+            http.call_args_list,
+            [
+                call("user", token="test-credential"),
+                call("user", token="test-credential"),
+                call(
+                    "repos/alice/second",
+                    method="PATCH",
+                    body={"delete_branch_on_merge": True},
+                ),
+            ],
+        )
 
     def test_malformed_transport_shapes_are_rejected(self):
         api = cleanup.GitHub()

@@ -117,12 +117,15 @@ def main():
                 shutil.copyfile(ROOT / "tests/branch-cleanup-module.tftest.hcl", test)
             else:
                 test.write_text(stack_tests(scope, resources))
+            # Init must record the current platform's package hash in this
+            # disposable lock. Read-only locks can verify the downloaded ZIP
+            # yet leave terraform test unable to verify its extracted cache.
+            # No -upgrade: the repository's selected provider version stays pinned.
             for command in (
                 [
                     "init",
                     "-backend=false",
                     "-input=false",
-                    "-lockfile=readonly",
                     "-no-color",
                 ],
                 ["test", "-no-color"],

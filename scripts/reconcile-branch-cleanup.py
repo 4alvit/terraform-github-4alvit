@@ -77,13 +77,16 @@ class GitHub:
             raise APIError("invalid_api_rows")
         return rows
 
-    def _http(self, endpoint, method="GET", body=None):
+    def _http(self, endpoint, method="GET", body=None, token=None):
+        credential = self._token if token is None else token
+        if not credential:
+            raise APIError("missing_write_credential")
         request = Request(
             "https://api.github.com/" + endpoint,
             data=json.dumps(body).encode() if body is not None else None,
             method=method,
             headers={
-                "Authorization": "Bearer " + self._token,
+                "Authorization": "Bearer " + credential,
                 "Accept": "application/vnd.github+json",
                 "Content-Type": "application/json",
                 "X-GitHub-Api-Version": "2022-11-28",
@@ -106,17 +109,18 @@ class GitHub:
         if body != {"delete_branch_on_merge": True}:
             raise APIError("unsupported_mutation")
         if self._token is None:
-            self._token = (
+            candidate = (
                 os.environ.get("GH_TOKEN")
                 or os.environ.get("GITHUB_TOKEN")
                 or self._gh(["auth", "token", "--hostname", "github.com"]).strip()
             )
             if (
-                not self._token
-                or self._http("user").get("login", "").lower() != self.login
+                not candidate
+                or self._http("user", token=candidate).get("login", "").lower()
+                != self.login
             ):
-                self._token = None
                 raise APIError("write_identity_mismatch")
+            self._token = candidate
         return self._http(endpoint, method="PATCH", body=body)
 
 
