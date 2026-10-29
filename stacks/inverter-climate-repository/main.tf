@@ -95,7 +95,7 @@ resource "github_repository_ruleset" "climate" {
     bypass_mode = "pull_request"
   }
 
-  # Organization owners retain an auditable emergency PR merge path.
+  # Organization owners may bypass branch rules for direct updates and history repair.
   bypass_actors {
     actor_id    = local.owner_emergency_merge_actor.actor_id
     actor_type  = local.owner_emergency_merge_actor.actor_type

@@ -154,6 +154,6 @@ owner approved the actual write scope before the invitations were issued.
 Existing grants are imported through the canonical owner workspace. Review
 the plan and keep unrelated infrastructure changes outside this adoption.
 
-## Emergency merge authority
+## Owner branch bypass
 
-The account owner `4alvit` can use a [documented emergency exception](docs/public-security.md#emergency-owner-merges) through a pull request when necessary. Ordinary review and CI requirements remain; this grant does not authorize direct pushes or tag rewrites. Terraform must be applied to the canonical state and live rules verified before relying on it.
+The account owner `4alvit` has [permanent branch bypass](docs/public-security.md#emergency-owner-merges), including direct pushes and history repair. Review and CI requirements continue to apply to other actors. Tag protections and deployment approvals are unchanged. Terraform must be applied to the canonical state and live rules verified before relying on the grant.

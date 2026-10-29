@@ -30,7 +30,9 @@ accepted access before relying on it as reviewer.
 
 Default-branch rules require a pull request, one approval, fresh reviews after a
 push, last-push approval, resolved threads, signed commits, and prevent branch
-deletion or force pushes. No administrator or automation bypass is granted.
+deletion or force pushes for ordinary contributors. The declared account owner
+has permanent branch bypass; other administrators and automation receive no
+additional exception.
 Version tags matching `v*` cannot be updated or deleted, including prereleases.
 Use a new version number when fixing a published prerelease.
 

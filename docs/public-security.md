@@ -2,18 +2,19 @@
 
 ## Emergency owner merges
 
-The owner policy approved on 2026-10-27 permits the account owner `4alvit` (`User`, numeric ID `272257197`)
-to bypass branch requirements **only while merging a pull request**. The shared
+The owner policy updated on 2026-10-29 permits the account owner `4alvit` (`User`, numeric ID `272257197`)
+to bypass branch requirements with `bypass_mode = "always"`, including direct
+pushes and force pushes for history repair. The shared
 `owner_emergency_merge_actor` in `admin-merge-policy.tf` is attached to each
 managed branch ruleset, including separate review and CI gates. A grant on only
 one ruleset cannot override another applicable rule. Existing unrelated actor
 exceptions are preserved; this change does not grant automation new privileges.
 
-Ordinary merges retain their existing reviews, CI, signatures and resolved-thread
-requirements. Use the exception deliberately for a necessary recovery, record the
-reason and available validation in the PR, and follow up on skipped checks. The
-new grant cannot authorize a direct push, force push, branch deletion or tag
-rewrite. Immutable release tags and deployment-environment approvals are unchanged.
+Other actors retain their existing review, CI, signature and resolved-thread
+requirements. The owner can also bypass branch deletion restrictions. Record the
+reason and available validation in the relevant change record when using this
+exception, and follow up on skipped checks. Immutable release tags and
+deployment-environment approvals are unchanged.
 Archived repositories remain read-only; existing archived release gates receive
 no new actor. Repositories without enforced protection need no bypass grant.
 

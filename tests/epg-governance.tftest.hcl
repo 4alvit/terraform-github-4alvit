@@ -23,10 +23,10 @@ run "legacy_policy_parity_and_owner_only_pr_exception" {
       length(github_repository_ruleset.epg_main.bypass_actors) == 1 &&
       one(github_repository_ruleset.epg_main.bypass_actors).actor_type == "User" &&
       one(github_repository_ruleset.epg_main.bypass_actors).actor_id == 272257197 &&
-      one(github_repository_ruleset.epg_main.bypass_actors).bypass_mode == "pull_request" &&
+      one(github_repository_ruleset.epg_main.bypass_actors).bypass_mode == "always" &&
       one(one(github_repository_ruleset.epg_main.conditions).ref_name).include == tolist(["refs/heads/main"])
     )
-    error_message = "Only the existing exact main branch and explicit owner may receive this PR-only exception."
+    error_message = "Only the existing exact main branch and explicit owner may receive permanent bypass."
   }
   assert {
     condition = (

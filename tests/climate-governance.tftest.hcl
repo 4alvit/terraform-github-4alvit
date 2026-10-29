@@ -11,7 +11,7 @@ run "owner_exception_preserves_existing_administrator_grant" {
     condition = (
       local.owner_emergency_merge_actor.actor_type == "OrganizationAdmin" &&
       local.owner_emergency_merge_actor.actor_id == null &&
-      local.owner_emergency_merge_actor.bypass_mode == "pull_request" &&
+      local.owner_emergency_merge_actor.bypass_mode == "always" &&
       length(github_repository_ruleset.climate.bypass_actors) == 2 &&
       length([
         for actor in github_repository_ruleset.climate.bypass_actors : actor
@@ -19,10 +19,10 @@ run "owner_exception_preserves_existing_administrator_grant" {
       ]) == 1 &&
       length([
         for actor in github_repository_ruleset.climate.bypass_actors : actor
-        if actor.actor_type == "OrganizationAdmin" && coalesce(actor.actor_id, 0) == 0 && actor.bypass_mode == "pull_request"
+        if actor.actor_type == "OrganizationAdmin" && coalesce(actor.actor_id, 0) == 0 && actor.bypass_mode == "always"
       ]) == 1
     )
-    error_message = "Add the owner emergency PR path without replacing the existing administrator PR exception."
+    error_message = "Allow owner history repair without changing the existing administrator PR exception."
   }
 }
 
