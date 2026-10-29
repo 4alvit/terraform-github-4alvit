@@ -63,12 +63,12 @@ def stack_tests(scope, resources):
     conditions = ",\n      ".join(
         f"github_repository.{name}.delete_branch_on_merge" for name in resources
     )
-    return f"""mock_provider "github" {{
-  override_during = plan
-  mock_data "github_user" {{
-    defaults = {{ login = "4alvit", id = "123" }}
-  }}
-}}
+    # Keep engine-specific mock syntax in HCL so check_opentofu.py adapts it
+    # alongside the other fixtures, without changing these policy assertions.
+    provider = (ROOT / "tests/fixtures/branch-cleanup-provider.tftest.hcl").read_text()
+    return (
+        provider
+        + f"""
 {inputs}
 run "every_repository_enables_cleanup" {{
   command = plan
@@ -80,6 +80,7 @@ run "every_repository_enables_cleanup" {{
   }}
 }}
 """
+    )
 
 
 def main():
