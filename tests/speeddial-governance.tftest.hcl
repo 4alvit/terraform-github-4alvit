@@ -9,16 +9,6 @@ mock_provider "github" {
   }
 }
 
-# The import remains part of the test configuration. Supply its existing
-# identity locally because mock providers cannot perform remote imports.
-override_resource {
-  target = github_repository_ruleset.speeddial_main
-  values = {
-    id         = "speeddial:25988957"
-    ruleset_id = 25988957
-  }
-}
-
 variables {
   github_organization = "4alvit"
 }

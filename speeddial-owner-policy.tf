@@ -4,11 +4,6 @@ data "github_repository" "speeddial" {
   full_name = "4alvit/speeddial"
 }
 
-import {
-  to = github_repository_ruleset.speeddial_main
-  id = "speeddial:25988957"
-}
-
 resource "github_repository_ruleset" "speeddial_main" {
   name        = "Public main review and CI"
   repository  = data.github_repository.speeddial.name
