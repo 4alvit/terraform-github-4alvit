@@ -8,15 +8,16 @@ registers `californiantiramisu` with write (`push`) permission, required for its
 approval to count. Existing collaborator resource addresses are unchanged.
 
 The default branch requires one current approval, resolved review conversations
-and strict success of `validate` and `Wake gate`, both bound to GitHub Actions
-(App 15368). Administrators and automation have no bypass. Deletion and force
-pushes are prohibited. A private, archived or different-owner target fails the
+and strict success of `validate`, `images` and `Wake gate`, each bound to
+GitHub Actions (App 15368). The declared owner retains the shared emergency
+bypass for direct updates and history repair. Other actors, including the
+automation account, remain subject to review, CI and history protection. A private, archived or different-owner target fails the
 plan rather than silently dropping the protection.
 
 ## Activate in order
 
-1. Merge and verify the Cisco workflow change that emits `Wake gate` on every
-   pull request. Its scope job must distinguish irrelevant changes from failed
+1. Merge and verify the Cisco workflows that emit `validate`, `images` and
+   `Wake gate` on every pull request. Its scope job must distinguish irrelevant changes from failed
    detection; the final gate must reject a failed or skipped relevant build.
    Requiring the earlier path-filtered `build` job would block documentation-only
    pull requests indefinitely.
@@ -34,8 +35,11 @@ plan rather than silently dropping the protection.
      -target=github_repository_ruleset.cisco_main -out=cisco-governance.tfplan
    ```
 
-   Accept only the missing bot write grant and ruleset plus their data read:
-   no replacements, deletions or unrelated changes. The ruleset depends on this
+   When the bot already has write access, expect only an in-place ruleset
+   update and necessary data reads. Accept a missing bot grant only when
+   explicitly required; reject replacements, deletions and unrelated changes.
+   Verify the shared approval workflow and its existing credential access
+   before requiring approval. A collaborator grant alone cannot run reviews. The ruleset depends on this
    grant, but GitHub may create a pending invitation first. The saved plan may
    contain workspace secrets;
    keep it local, uncommitted and access restricted. Apply only the reviewed plan
@@ -46,7 +50,7 @@ plan rather than silently dropping the protection.
    a successful Terraform apply alone does not establish that the bot can review.
    Never bypass the rule while waiting for acceptance.
 5. Read the resulting live rule and check its owner, default branch, review count,
-   no-bypass policy and exact required contexts. Run the normal unrestricted plan
+   declared owner bypass and all three exact required contexts. Run the normal unrestricted plan
    separately to distinguish this narrow activation from overall drift.
 
 Rollback must preserve required review and working CI: if a check name changes,
