@@ -56,10 +56,10 @@ run "one_current_review_and_actual_ci_with_owner_exception" {
     condition = (
       one(one(github_repository_ruleset.cisco_main.rules).required_status_checks).strict_required_status_checks_policy &&
       !one(one(github_repository_ruleset.cisco_main.rules).required_status_checks).do_not_enforce_on_create &&
-      toset([for check in one(one(github_repository_ruleset.cisco_main.rules).required_status_checks).required_check : check.context]) == toset(["validate", "Wake gate"]) &&
+      toset([for check in one(one(github_repository_ruleset.cisco_main.rules).required_status_checks).required_check : check.context]) == toset(["validate", "images", "Wake gate"]) &&
       alltrue([for check in one(one(github_repository_ruleset.cisco_main.rules).required_status_checks).required_check : check.integration_id == 15368])
     )
-    error_message = "Require the two always-emitted actual GitHub Actions checks, not a nonexistent CI gate or path-filtered build."
+    error_message = "Require all three always-emitted actual GitHub Actions checks, not a nonexistent CI gate or path-filtered build."
   }
 }
 

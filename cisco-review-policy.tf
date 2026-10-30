@@ -11,8 +11,8 @@ resource "github_repository_ruleset" "cisco_main" {
   repository  = data.github_repository.cisco_home_telephony.name
   target      = "branch"
   enforcement = "active"
-  # Normal --auto merges wait for actual checks; only the owner may bypass via PR.
-  # Owners may make an explicit emergency merge through an auditable PR.
+  # Normal merges require review and the actual CI checks.
+  # The declared owner retains the shared emergency bypass policy.
   bypass_actors {
     actor_id    = local.owner_emergency_merge_actor.actor_id
     actor_type  = local.owner_emergency_merge_actor.actor_type
@@ -39,6 +39,10 @@ resource "github_repository_ruleset" "cisco_main" {
       do_not_enforce_on_create             = false
       required_check {
         context        = "validate"
+        integration_id = 15368
+      }
+      required_check {
+        context        = "images"
         integration_id = 15368
       }
       required_check {
