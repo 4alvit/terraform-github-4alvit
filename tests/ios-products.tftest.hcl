@@ -19,7 +19,7 @@ run "bootstrap_scope_and_protections" {
   }
   assert {
     condition = alltrue([
-      for policy in github_repository_ruleset.ios_products_default : (
+      for name, policy in github_repository_ruleset.ios_products_default : (
         policy.enforcement == "active" &&
         (
           length([for actor in policy.bypass_actors : actor if actor.actor_type == local.owner_emergency_merge_actor.actor_type]) == 1 &&
@@ -37,11 +37,27 @@ run "bootstrap_scope_and_protections" {
         one(one(policy.rules).pull_request).dismiss_stale_reviews_on_push &&
         one(one(policy.rules).pull_request).require_last_push_approval &&
         one(one(policy.rules).pull_request).required_review_thread_resolution &&
-        length(one(policy.rules).required_status_checks) == 0 &&
+        length(one(policy.rules).required_status_checks) == (name == "document-sanitizer-ios" ? 1 : 0) &&
         length(one(policy.rules).required_code_scanning) == 0
       )
     ])
-    error_message = "Bootstrap needs current reviews and signatures with only the documented owner exception or missing workflow gates."
+    error_message = "Default policies preserve current reviews, signatures, owner exception, and only the qualified Sanitizer check block."
+  }
+  assert {
+    condition = (
+      one(one(github_repository_ruleset.ios_products_default["document-sanitizer-ios"].rules).required_status_checks).strict_required_status_checks_policy &&
+      !one(one(github_repository_ruleset.ios_products_default["document-sanitizer-ios"].rules).required_status_checks).do_not_enforce_on_create &&
+      { for check in one(one(github_repository_ruleset.ios_products_default["document-sanitizer-ios"].rules).required_status_checks).required_check : check.context => check.integration_id } == {
+        "macOS core, independent export corpus, iOS build" = 15368
+        "Russian iPad privacy at system AX5"               = 15368
+        "Native StoreKit eight-case acceptance"            = 15368
+        "Exact packaged Release share smoke"               = 15368
+        "analyze / CodeQL Analysis"                        = 15368
+        "Swift security analysis"                          = 15368
+        "CodeQL"                                           = 57789
+      }
+    )
+    error_message = "Sanitizer needs all six Actions jobs plus the CodeQL app result, bound to their observed apps and current base."
   }
   assert {
     condition = alltrue([

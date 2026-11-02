@@ -36,6 +36,22 @@ additional exception.
 Version tags matching `v*` cannot be updated or deleted, including prereleases.
 Use a new version number when fixing a published prerelease.
 
+The `document-sanitizer-ios` default-branch policy additionally requires its
+established acceptance jobs and source analyses against the current base. The
+six GitHub Actions checks (app ID `15368`) are `macOS core, independent export
+corpus, iOS build`, `Russian iPad privacy at system AX5`, `Native StoreKit
+eight-case acceptance`, `Exact packaged Release share smoke`, `analyze / CodeQL
+Analysis`, and `Swift security analysis`. The aggregate `CodeQL` result is bound
+to the CodeQL app (`57789`). These checks do not grant a merge bypass, and a
+successful analysis alone does not replace native acceptance. The other two
+iOS repository policies retain their existing check requirements.
+
+Before applying this addition, verify all seven exact check names and app IDs
+on the current Sanitizer PR, including a successful Swift analysis and all four
+native acceptance jobs. Review a full saved plan showing only the Sanitizer
+default-branch ruleset update. No repository creation, collaborator change,
+application deployment, or other ruleset change belongs in this operation.
+
 After apply, follow `docs/public-security.md` to reconcile the unsupported extra
 Copilot approval flag while preserving every other rule. Verify private
 vulnerability reporting separately using GitHub's repository API, since the
