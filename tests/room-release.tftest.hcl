@@ -5,7 +5,6 @@ mock_provider "github" {
     defaults = {
       repo_id        = 1432741511
       name           = "room-inventory-ios"
-      full_name      = "4alvit/room-inventory-ios"
       visibility     = "public"
       archived       = false
       default_branch = "main"
@@ -51,7 +50,7 @@ run "reject_private_repository" {
   override_data {
     target = data.github_repository.room_release
     values = {
-      name       = "room-inventory-ios", full_name = "4alvit/room-inventory-ios",
+      repo_id    = 1432741511, name = "room-inventory-ios",
       visibility = "private", archived = false, default_branch = "main"
     }
   }
@@ -63,7 +62,7 @@ run "reject_changed_default_branch" {
   override_data {
     target = data.github_repository.room_release
     values = {
-      name       = "room-inventory-ios", full_name = "4alvit/room-inventory-ios",
+      repo_id    = 1432741511, name = "room-inventory-ios",
       visibility = "public", archived = false, default_branch = "develop"
     }
   }
@@ -84,7 +83,7 @@ run "reject_recreated_repository" {
   override_data {
     target = data.github_repository.room_release
     values = {
-      repo_id    = 1, name = "room-inventory-ios", full_name = "4alvit/room-inventory-ios",
+      repo_id    = 1, name = "room-inventory-ios",
       visibility = "public", archived = false, default_branch = "main"
     }
   }
@@ -96,7 +95,7 @@ run "reject_archived_repository" {
   override_data {
     target = data.github_repository.room_release
     values = {
-      repo_id    = 1432741511, name = "room-inventory-ios", full_name = "4alvit/room-inventory-ios",
+      repo_id    = 1432741511, name = "room-inventory-ios",
       visibility = "public", archived = true, default_branch = "main"
     }
   }
@@ -109,7 +108,7 @@ run "reject_foreign_owner" {
   override_data {
     target = data.github_repository.room_release
     values = {
-      repo_id    = 1432741511, name = "room-inventory-ios", full_name = "another-owner/room-inventory-ios",
+      repo_id    = 1432741511, name = "room-inventory-ios",
       visibility = "public", archived = false, default_branch = "main"
     }
   }
