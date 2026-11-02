@@ -16,12 +16,15 @@ to the top-level state or use an empty state as an access-recovery workaround.
 
 This project uses the canonical HCP Terraform workspace
 `alvit-infrastructure/github-4alvit-infrastructure` for the personal GitHub account.
-The workspace ID is `ws-AKy7NQFpKuV5KHyr`. The September 2026 migration recorded
-its owner's HCP username as `4alvit`; the operator has since reported renaming
-the account. Do not select credentials by that historical username alone.
-Verify the token's identity with `GET /api/v2/account/details` and its access to
-`GET /api/v2/workspaces/ws-AKy7NQFpKuV5KHyr` before initializing the backend.
-A 404 does not distinguish a missing workspace from missing access.
+The workspace ID is `ws-AKy7NQFpKuV5KHyr`. Use the existing named **4alvit**
+credential profile for this organization, not the default Terraform account.
+Follow the [HCP account-selection runbook](docs/hcp-account-selection.md): verify
+the immutable account ID and the exact organization/workspace through the API
+with that same credential before backend initialization and every plan/apply.
+The default account `alvit` and named account `4alvit` are distinct; a successful
+login to the former does not establish access to this workspace. A 404 does not
+distinguish a missing workspace from missing access. Do not create replacement
+state or fall back to another account after an identity/access check fails.
 
 Supply an authorized token through `TF_TOKEN_app_terraform_io` in the command
 environment. Load it from a private credential store or hidden input; do not put

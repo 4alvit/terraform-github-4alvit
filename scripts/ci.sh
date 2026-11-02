@@ -13,6 +13,7 @@ bash scripts/test-cisco-governance.sh
 bash scripts/test-epg-governance.sh
 bash scripts/test-speeddial-governance.sh
 bash scripts/test-ios-products.sh
+bash scripts/test-room-release.sh
 bash scripts/test-runner-routing.sh
 bash scripts/test-climate-governance.sh
 tflint --config="$PWD/.tflint.hcl" --recursive
