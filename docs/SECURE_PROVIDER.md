@@ -2,7 +2,7 @@
 
 The official GitHub provider 6.13.0 binary was built with Go 1.26.4 and its dependency scan contains older findings. Upstream currently offers no newer release that resolves them all. The checked-in default lock files still refer to that official binary; this change does not silently replace a production provider or alter infrastructure.
 
-For the supported independent local deployment profile, build the same upstream 6.13.0 source commit `20728bb30c112287ac3e8243cdb0307a45c6a0a0` with Go 1.27.3 and the exact reviewed module files under `security/provider/`. This derivative is labelled 6.13.0-openssf.2, retains its MPL 2.0 upstream license, and updates x/net 0.60.0, x/text 0.42.0, x/crypto 0.57.0 and grpc 1.83.2 along with required transitive versions. Revision 2 also updates go-jose from 4.1.4 to 4.1.6 for [GHSA-mgcc-cww5-fp2q](https://github.com/advisories/GHSA-mgcc-cww5-fp2q), preserving the other 66 requirements. Its compiler is Go 1.27.3, which also addresses [GO-2026-6809](https://pkg.go.dev/vuln/GO-2026-6809) in certificate verification; source qualification rejected the former Go 1.27.2 compiler. The manifest pins the source archive and module-file hashes. It is a disclosed local derivative, not a claim that upstream has released a fixed binary.
+For the supported independent local deployment profile, build the same upstream 6.13.0 source commit `20728bb30c112287ac3e8243cdb0307a45c6a0a0` with Go 1.27.3 and the exact reviewed module files under `security/provider/`. This derivative is labelled 6.13.0-openssf.3, retains its MPL 2.0 upstream license, and updates x/net 0.62.0, x/text 0.43.0, x/crypto 0.58.0 and grpc 1.83.2 along with required transitive versions. Revision 2 also updates go-jose from 4.1.4 to 4.1.6 for [GHSA-mgcc-cww5-fp2q](https://github.com/advisories/GHSA-mgcc-cww5-fp2q), preserving the other 66 requirements. Its compiler is Go 1.27.3, which also addresses [GO-2026-6809](https://pkg.go.dev/vuln/GO-2026-6809) in certificate verification; source qualification rejected the former Go 1.27.2 compiler. Revision 3 fixes the x/net HTML parser advisories [GO-2026-6860](https://pkg.go.dev/vuln/GO-2026-6860) and [GO-2026-6866](https://pkg.go.dev/vuln/GO-2026-6866), with the matching transitive module updates resolved inside the verified upstream source. All 67 requirements remain present. The manifest pins the source archive and module-file hashes. It is a disclosed local derivative, not a claim that upstream has released a fixed binary.
 
 ## Reproduce the derivative
 
@@ -15,7 +15,7 @@ python3 scripts/build_secure_provider.py --go /VERIFIED/go/bin/go \
 
 Supported target choices are linux_amd64, linux_arm64, darwin_amd64 and darwin_arm64. The builder uses verified OpenSSL 3 TLS at security level 3 for GitHub/codeload archives, rejects HTTP/off-site redirects, forces Go FIPS TLS for module/scanner downloads, and uses an isolated home/cache, rejects unsafe archive entries, excludes operator credentials, verifies module hashes, runs source govulncheck and upstream nonacceptance unit tests, then records the actual compiler and binary digest in provenance.json. Acceptance tests are intentionally excluded because they create real GitHub resources. The builder never runs Terraform, installs a provider, edits a lock file or applies infrastructure.
 
-On 2026-10-16 revision 1's Linux ARM64 build completed with actual Go 1.27.2, no source-reachable vulnerabilities, passing nonacceptance unit tests and SHA256 `67fd0dab765543cd3f2c5214b074b996a9cebcd391da1cead4dca45ea026ce27`. That historical result does not qualify revision 2. Use its own CI source qualification and reproduce the transport tests on the intended platform before deployment. Binary-only scanners may still report unused wildcard OpenPGP packages; source imports/call paths are checked independently. Subsequent vulnerability database changes can fail a new build and must be investigated, not ignored.
+On 2026-10-16 revision 1's Linux ARM64 build completed with actual Go 1.27.2, no source-reachable vulnerabilities, passing nonacceptance unit tests and SHA256 `67fd0dab765543cd3f2c5214b074b996a9cebcd391da1cead4dca45ea026ce27`. That historical result does not qualify revision 3. Use its own CI source qualification and reproduce the transport tests on the intended platform before deployment. Binary-only scanners may still report unused wildcard OpenPGP packages; source imports/call paths are checked independently. Subsequent vulnerability database changes can fail a new build and must be investigated, not ignored.
 
 ## Update dependencies in their actual source context
 
@@ -29,7 +29,7 @@ Use the existing builder for future updates, with a new derivative revision and 
 # Replace the module/version with the reviewed update. Do not use @latest.
 python3 scripts/build_secure_provider.py --go /VERIFIED/go/bin/go \
   --update-module example.org/module@v1.2.3 \
-  --build-version 6.13.0-openssf.3 \
+  --build-version 6.13.0-openssf.4 \
   --output /PRIVATE/github-provider-update --platform linux_amd64
 ```
 

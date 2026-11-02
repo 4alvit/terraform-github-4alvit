@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+
+- Update the disclosed local provider to 6.13.0-openssf.3 with x/net 0.62.0 and its compatible transitive modules, addressing GO-2026-6860 and GO-2026-6866. Preserve the complete source-qualified lock graph; existing HCP providers and infrastructure are unchanged.
+
 ## [0.2.0] - 2026-10-17
 
 ### Security
