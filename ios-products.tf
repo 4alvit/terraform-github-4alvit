@@ -95,6 +95,33 @@ resource "github_repository_ruleset" "ios_products_default" {
     deletion            = true
     non_fast_forward    = true
     required_signatures = true
+    # This product's existing acceptance and source analyses must pass before merge.
+    # Keep the other active iOS repository policies unchanged.
+    dynamic "required_status_checks" {
+      for_each = each.key == "document-sanitizer-ios" ? [true] : []
+      content {
+        strict_required_status_checks_policy = true
+        do_not_enforce_on_create             = false
+        required_check {
+          context        = "CodeQL"
+          integration_id = 57789
+        }
+        dynamic "required_check" {
+          for_each = toset([
+            "macOS core, independent export corpus, iOS build",
+            "Russian iPad privacy at system AX5",
+            "Native StoreKit eight-case acceptance",
+            "Exact packaged Release share smoke",
+            "analyze / CodeQL Analysis",
+            "Swift security analysis",
+          ])
+          content {
+            context        = required_check.value
+            integration_id = 15368
+          }
+        }
+      }
+    }
     pull_request {
       allowed_merge_methods             = ["merge", "squash", "rebase"]
       required_approving_review_count   = 1
