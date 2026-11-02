@@ -8,8 +8,9 @@ registers `californiantiramisu` with write (`push`) permission, required for its
 approval to count. Existing collaborator resource addresses are unchanged.
 
 The default branch requires one current approval, resolved review conversations
-and strict success of `validate`, `images` and `Wake gate`, each bound to
-GitHub Actions (App 15368). The declared owner retains the shared emergency
+and strict success of `validate`, `images`, `Wake gate`, and
+`analyze / CodeQL Analysis`, bound to GitHub Actions (App 15368), plus
+`CodeQL` bound to the CodeQL app (57789). The declared owner retains the shared emergency
 bypass for direct updates and history repair. Other actors, including the
 automation account, remain subject to review, CI and history protection. A private, archived or different-owner target fails the
 plan rather than silently dropping the protection.
@@ -20,7 +21,11 @@ plan rather than silently dropping the protection.
    `Wake gate` on every pull request. Its scope job must distinguish irrelevant changes from failed
    detection; the final gate must reject a failed or skipped relevant build.
    Requiring the earlier path-filtered `build` job would block documentation-only
-   pull requests indefinitely.
+   pull requests indefinitely. The dedicated CodeQL caller has no path filters
+   and inherits `force-full: true` from its immutable shared workflow, so it also
+   analyzes documentation-only changes. Confirm both the analysis job and the
+   SARIF result before requiring these security checks; retain this behavior when
+   updating the shared workflow pin.
 2. Confirm the live repository is public and active, and inspect existing
    rulesets. If this rule already exists, import its ID into the address below
    rather than creating a duplicate.
@@ -50,7 +55,7 @@ plan rather than silently dropping the protection.
    a successful Terraform apply alone does not establish that the bot can review.
    Never bypass the rule while waiting for acceptance.
 5. Read the resulting live rule and check its owner, default branch, review count,
-   declared owner bypass and all three exact required contexts. Run the normal unrestricted plan
+   declared owner bypass and all five exact required contexts. Run the normal unrestricted plan
    separately to distinguish this narrow activation from overall drift.
 
 Rollback must preserve required review and working CI: if a check name changes,
