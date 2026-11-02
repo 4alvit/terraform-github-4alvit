@@ -49,6 +49,14 @@ resource "github_repository_ruleset" "cisco_main" {
         context        = "Wake gate"
         integration_id = 15368
       }
+      required_check {
+        context        = "analyze / CodeQL Analysis"
+        integration_id = 15368
+      }
+      required_check {
+        context        = "CodeQL"
+        integration_id = 57789
+      }
     }
   }
   lifecycle {
