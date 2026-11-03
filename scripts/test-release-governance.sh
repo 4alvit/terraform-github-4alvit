@@ -3,10 +3,11 @@ set -euo pipefail
 cd "$(dirname "$0")/.."
 temporary=$(mktemp -d "${TMPDIR:-/tmp}/release-governance-test.XXXXXX")
 trap 'rm -rf "$temporary"' EXIT
-mkdir -p "$temporary/tests" "$temporary/provider-cache"
+mkdir -p "$temporary/tests" "$temporary/provider-cache" "$temporary/modules"
 touch "$temporary/empty.tfrc"
 cp admin-merge-policy.tf "$temporary/"
-cp public-security.tf release-standards.tf webhook-inputs.tf tests/release-governance/main.tf "$temporary/"
+cp public-security.tf release-standards.tf ha-homelab.tf webhook-inputs.tf tests/release-governance/main.tf "$temporary/"
+cp -R modules/github_repo "$temporary/modules/"
 cp tests/release-governance.tftest.hcl "$temporary/tests/"
 if [[ -f .terraform.lock.hcl ]]; then
   cp .terraform.lock.hcl "$temporary/"

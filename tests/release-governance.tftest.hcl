@@ -19,6 +19,16 @@ mock_provider "github" {
   }
 }
 
+# The existing repository is imported by ha-homelab.tf; supply its already-owned
+# identity explicitly while mocking every GitHub interaction.
+override_resource {
+  target = module.repos["terraform_github_ha_homelab"].github_repository.this
+  values = {
+    id   = "terraform-github-ha-homelab"
+    name = "terraform-github-ha-homelab"
+  }
+}
+
 run "empty_defaults_do_not_manage_repositories" {
   command = plan
   assert {
@@ -265,4 +275,95 @@ run "reject_plaintext_webhook" {
   command = plan
   variables { portainer_push_webhook_url = "http://webhook.example.invalid/webhook" }
   expect_failures = [var.portainer_push_webhook_url]
+}
+
+run "voice_review_is_independent_of_bypass_rollout" {
+  command = plan
+  variables {
+    release_gate_repositories = ["amazon-echo-home-voice", "google-home-voice-stats", "unrelated-app"]
+  }
+  assert {
+    condition = alltrue([
+      for repo in ["amazon-echo-home-voice", "google-home-voice-stats"] : try((
+        one(one(github_repository_ruleset.release_quality_gate[repo].rules).pull_request).required_approving_review_count == 1 &&
+        one(one(github_repository_ruleset.release_quality_gate[repo].rules).pull_request).dismiss_stale_reviews_on_push &&
+        one(one(github_repository_ruleset.release_quality_gate[repo].rules).pull_request).require_last_push_approval &&
+        one(one(github_repository_ruleset.release_quality_gate[repo].rules).pull_request).required_review_thread_resolution &&
+        toset(one(one(github_repository_ruleset.release_quality_gate[repo].rules).pull_request).allowed_merge_methods) == toset(["merge", "squash", "rebase"]) &&
+        length(github_repository_ruleset.release_quality_gate[repo].bypass_actors) == 2 &&
+        one([for actor in github_repository_ruleset.release_quality_gate[repo].bypass_actors : actor if actor.actor_type == "RepositoryRole"]).actor_id == 5 &&
+        one([for actor in github_repository_ruleset.release_quality_gate[repo].bypass_actors : actor if actor.actor_type == "RepositoryRole"]).bypass_mode == "pull_request" &&
+        one([for actor in github_repository_ruleset.release_quality_gate[repo].bypass_actors : actor if actor.actor_type == "User"]).actor_id == 272257197 &&
+        one([for actor in github_repository_ruleset.release_quality_gate[repo].bypass_actors : actor if actor.actor_type == "User"]).bypass_mode == "always" &&
+        one(one(github_repository_ruleset.release_quality_gate[repo].rules).required_status_checks).strict_required_status_checks_policy &&
+        one(one(one(github_repository_ruleset.release_quality_gate[repo].rules).required_status_checks).required_check).context == "CI gate" &&
+        one(one(one(github_repository_ruleset.release_quality_gate[repo].rules).required_status_checks).required_check).integration_id == 15368
+      ), false)
+    ])
+    error_message = "Both voice projects require one current review while keeping existing owner/admin exceptions and strict app-bound CI."
+  }
+  assert {
+    condition = (
+      length(one(github_repository_ruleset.release_quality_gate["unrelated-app"].rules).pull_request) == 0 &&
+      length(github_repository_ruleset.public_review) == 0
+    )
+    error_message = "This narrow completion must not activate unrelated review rules or the broader bypass rollout."
+  }
+}
+
+run "archived_voice_review_is_unchanged" {
+  command = plan
+  variables {
+    release_gate_repositories = ["amazon-echo-home-voice"]
+  }
+  override_data {
+    target = data.github_repository.release_standard["amazon-echo-home-voice"]
+    values = {
+      visibility = "public"
+      archived   = true
+    }
+  }
+  assert {
+    condition     = length(one(github_repository_ruleset.release_quality_gate["amazon-echo-home-voice"].rules).pull_request) == 0
+    error_message = "Archived voice projects must not gain a new review requirement."
+  }
+}
+
+run "private_voice_review_is_unchanged" {
+  command = plan
+  variables {
+    release_gate_repositories = ["google-home-voice-stats"]
+  }
+  override_data {
+    target = data.github_repository.release_standard["google-home-voice-stats"]
+    values = {
+      visibility = "private"
+      archived   = false
+    }
+  }
+  assert {
+    condition     = length(github_repository_ruleset.release_quality_gate) == 0
+    error_message = "Private voice projects must remain outside public release protection."
+  }
+}
+
+run "ha_infrastructure_requires_review_without_bypass_rollout" {
+  command = plan
+  assert {
+    condition = (
+      one(one(github_repository_ruleset.ha_homelab_infrastructure.rules).pull_request).required_approving_review_count == 1 &&
+      one(one(github_repository_ruleset.ha_homelab_infrastructure.rules).pull_request).dismiss_stale_reviews_on_push &&
+      one(one(github_repository_ruleset.ha_homelab_infrastructure.rules).pull_request).require_last_push_approval &&
+      one(one(github_repository_ruleset.ha_homelab_infrastructure.rules).pull_request).required_review_thread_resolution &&
+      toset(one(one(github_repository_ruleset.ha_homelab_infrastructure.rules).pull_request).allowed_merge_methods) == toset(["merge", "squash", "rebase"]) &&
+      one(one(github_repository_ruleset.ha_homelab_infrastructure.rules).required_status_checks).strict_required_status_checks_policy &&
+      one(one(one(github_repository_ruleset.ha_homelab_infrastructure.rules).required_status_checks).required_check).context == "Terraform validation" &&
+      length(github_repository_ruleset.ha_homelab_infrastructure.bypass_actors) == 2 &&
+      one([for actor in github_repository_ruleset.ha_homelab_infrastructure.bypass_actors : actor if actor.actor_type == "RepositoryRole"]).actor_id == 5 &&
+      one([for actor in github_repository_ruleset.ha_homelab_infrastructure.bypass_actors : actor if actor.actor_type == "RepositoryRole"]).bypass_mode == "always" &&
+      one([for actor in github_repository_ruleset.ha_homelab_infrastructure.bypass_actors : actor if actor.actor_type == "User"]).actor_id == 272257197 &&
+      one([for actor in github_repository_ruleset.ha_homelab_infrastructure.bypass_actors : actor if actor.actor_type == "User"]).bypass_mode == "always"
+    )
+    error_message = "HA infrastructure needs one current review without changing its checks, merge methods, or owner/admin exceptions."
+  }
 }

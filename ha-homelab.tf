@@ -48,10 +48,10 @@ resource "github_repository_ruleset" "ha_homelab_infrastructure" {
     deletion         = true
     non_fast_forward = true
     pull_request {
-      dismiss_stale_reviews_on_push     = contains(local.enforced_public_software_repositories, "terraform-github-ha-homelab")
-      require_last_push_approval        = contains(local.enforced_public_software_repositories, "terraform-github-ha-homelab")
+      dismiss_stale_reviews_on_push     = true
+      require_last_push_approval        = true
       allowed_merge_methods             = ["merge", "squash", "rebase"]
-      required_approving_review_count   = contains(local.enforced_public_software_repositories, "terraform-github-ha-homelab") ? 1 : 0
+      required_approving_review_count   = 1
       required_review_thread_resolution = true
     }
     required_status_checks {
