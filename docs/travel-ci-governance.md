@@ -26,9 +26,11 @@ keeps its existing exact check set; Room is not opted into Travel's check names.
 
 First verify all four context/application pairs on the current Travel pull
 request, then merge the source analysis workflow and verify its default-branch
-results. The current ruleset does not enable a merge queue. Before enabling or
-using one, also verify all four results on a real `merge_group` run; configured
-triggers alone are not evidence of an executed queue check.
+results. The current ruleset does not enable a merge queue. If one is introduced
+later, enable it in a controlled validation window, enqueue a reviewed pull
+request, and verify all four results on the resulting `merge_group` run before
+relying on the queue for ordinary merges. Configured triggers alone are not
+evidence of an executed queue check; see the [GitHub event documentation](https://docs.github.com/en/actions/reference/workflows-and-actions/events-that-trigger-workflows#merge_group).
 Follow the [canonical HCP account checks](hcp-account-selection.md)
 before using the existing workspace. Review a saved plan restricted to
 `github_repository_ruleset.ios_products_default["travel-documents-ios"]`.
