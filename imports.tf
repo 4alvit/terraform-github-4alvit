@@ -153,3 +153,11 @@ import {
   to = github_repository_ruleset.speeddial_main
   id = "speeddial:25988957"
 }
+
+# The GitHub organization and its repositories are owned by the separate
+# github-ha-homelab-infrastructure workspace. This account owns only its public
+# Terraform source repository. Bootstrap created the empty repo before import.
+import {
+  to = module.repos["terraform_github_ha_homelab"].github_repository.this
+  id = "terraform-github-ha-homelab"
+}

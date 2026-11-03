@@ -1,11 +1,3 @@
-# The GitHub organization and its repositories are owned by the separate
-# github-ha-homelab-infrastructure workspace. This account owns only its public
-# Terraform source repository. Bootstrap created the empty repo before import.
-import {
-  to = module.repos["terraform_github_ha_homelab"].github_repository.this
-  id = "terraform-github-ha-homelab"
-}
-
 resource "github_repository_vulnerability_alerts" "ha_homelab_infrastructure" {
   repository = module.repos["terraform_github_ha_homelab"].repository.name
 }

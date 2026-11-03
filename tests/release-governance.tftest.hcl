@@ -19,16 +19,6 @@ mock_provider "github" {
   }
 }
 
-# The existing repository is imported by ha-homelab.tf; supply its already-owned
-# identity explicitly while mocking every GitHub interaction.
-override_resource {
-  target = module.repos["terraform_github_ha_homelab"].github_repository.this
-  values = {
-    id   = "terraform-github-ha-homelab"
-    name = "terraform-github-ha-homelab"
-  }
-}
-
 run "empty_defaults_do_not_manage_repositories" {
   command = plan
   assert {
