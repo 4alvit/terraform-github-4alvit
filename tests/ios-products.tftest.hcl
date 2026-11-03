@@ -37,11 +37,11 @@ run "bootstrap_scope_and_protections" {
         one(one(policy.rules).pull_request).dismiss_stale_reviews_on_push &&
         one(one(policy.rules).pull_request).require_last_push_approval &&
         one(one(policy.rules).pull_request).required_review_thread_resolution &&
-        length(one(policy.rules).required_status_checks) == (name == "document-sanitizer-ios" ? 1 : 0) &&
+        length(one(policy.rules).required_status_checks) == (contains(["document-sanitizer-ios", "travel-documents-ios"], name) ? 1 : 0) &&
         length(one(policy.rules).required_code_scanning) == 0
       )
     ])
-    error_message = "Default policies preserve current reviews, signatures, owner exception, and only the qualified Sanitizer check block."
+    error_message = "Default policies preserve current reviews, signatures, owner exception, and the qualified Sanitizer and Travel check blocks."
   }
   assert {
     condition = (
@@ -58,6 +58,19 @@ run "bootstrap_scope_and_protections" {
       }
     )
     error_message = "Sanitizer needs all six Actions jobs plus the CodeQL app result, bound to their observed apps and current base."
+  }
+  assert {
+    condition = (
+      one(one(github_repository_ruleset.ios_products_default["travel-documents-ios"].rules).required_status_checks).strict_required_status_checks_policy &&
+      !one(one(github_repository_ruleset.ios_products_default["travel-documents-ios"].rules).required_status_checks).do_not_enforce_on_create &&
+      { for check in one(one(github_repository_ruleset.ios_products_default["travel-documents-ios"].rules).required_status_checks).required_check : check.context => check.integration_id } == {
+        "CI gate"                   = 15368
+        "analyze / CodeQL Analysis" = 15368
+        "Swift security analysis"   = 15368
+        "CodeQL"                    = 57789
+      }
+    )
+    error_message = "Travel requires its complete native acceptance gate and both source analyses, bound to the observed apps and current base."
   }
   assert {
     condition = alltrue([
