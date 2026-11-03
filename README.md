@@ -125,11 +125,12 @@ Requires Terraform ≥ 1.15.7.
 
 ## Import Existing Repos
 
-Import blocks are included in `main.tf` for existing repositories. Run:
+Import blocks for existing repositories are declared in the root `*.tf` files,
+including `imports.tf`. Review them against the existing workspace state. Run:
 
 ```bash
 terraform init
-terraform plan  # Will show imports
+terraform plan  # Review pending imports and changes; imported objects are not recreated
 ```
 
 ## Contributions and public security
