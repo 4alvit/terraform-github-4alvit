@@ -37,11 +37,30 @@ The independent `stacks/inverter-climate-repository` root uses the organization-
 Live metadata excludes private and archived repositories from new protections.
 The required review count is one approval from a reviewer with Write access.
 Automation may provide that approval. Keep this count at one when reconciling
-Terraform with GitHub. Other committed proposals, including changes to bypass
-actors and new review rules, require explicit selection through
-`public_security_enforcement_repositories`, which is empty by default.
+Terraform with GitHub. The three existing review gates below are mandatory
+independently of `public_security_enforcement_repositories`. The broader rollout
+of `public_review` rulesets and changes to administrator bypass actors still
+requires explicit selection through that variable, which is empty by default.
 Existing checks, signatures and immutable-tag protections remain separate
 requirements.
+
+### Mandatory reviews in three existing rulesets
+
+The following public repositories require one current approval from a reviewer
+with Write access, stale-review dismissal, approval after the last push, and
+resolved review threads. Their existing owner and administrator exceptions are
+preserved, together with these required checks:
+
+- `amazon-echo-home-voice`: strict `CI gate`, GitHub Actions app ID `15368`.
+- `google-home-voice-stats`: strict `CI gate`, GitHub Actions app ID `15368`.
+- `terraform-github-ha-homelab`: strict `Terraform validation`.
+
+The two voice gates are managed by `release_quality_gate`; the infrastructure
+gate is managed by `ha_homelab_infrastructure`. These requirements remain active
+when the broader rollout selection is empty. They were applied and read back
+after [PR #112](https://github.com/4alvit/terraform-github-4alvit/pull/112).
+The voice gates continue to exclude private and archived repositories. No new
+ruleset, repository, reviewer grant, or bypass privilege is introduced.
 
 Secret scanning and push protection are enabled on the audited public repository
 resources managed by this state. Private vulnerability reporting was enabled
@@ -89,11 +108,12 @@ apply the live repair. A separate guarded update must verify the exact current
 body and its own recorded rejection before removing that app exception. It does
 not authorize removing valid or unverified app exceptions in other repositories.
 
-Routine reconciliation preserves existing administrator exceptions and does not
-activate new review rules. Select repositories in
-`public_security_enforcement_repositories` only after verifying their reviewers
-and approval workflows. Selection does not change the required count above one.
-Existing enforced reviews remain active even when the selection is empty.
+Routine reconciliation preserves existing administrator exceptions. The three
+mandatory existing rulesets above enforce their reviews without a separate
+rollout selection. For the broader `public_review` rollout, select repositories
+in `public_security_enforcement_repositories` only after verifying their
+reviewers and approval workflows. Selection does not change the required count
+above one. Existing enforced reviews remain active when the selection is empty.
 Inspect a full plan against the canonical existing state before any apply; use
 the reviewed saved plan. Do not apply from empty or unrelated state.
 For each selected setting update, compare the complete current ruleset with its
@@ -123,6 +143,18 @@ local backup directory for each application. Rules without required approvals
 keep their zero count; archived repositories stay read-only and are reported.
 This step is required until the provider supports the
 extra-approval field; a Terraform plan alone cannot validate it.
+
+For a limited rollout, scope the writes to the reviewed repository/ruleset IDs;
+an owner-wide `--apply` is broader than that authorization. In the three-gate
+rollout above, read back only rulesets `23126517`, `23126562`, and `23420144` in
+the listed repository order, confirm their full writable bodies still match the
+reviewed post-apply state, and change only
+`require_extra_approval_for_unattributed_changes` to `false`. Read back each
+result and verify that the count, required checks, bypass actors, conditions,
+and all other rule parameters are unchanged. This correction was necessary for
+all three rulesets after the provider apply. The existing script remains useful
+for an owner-wide inspection; do not treat its inspection output as permission
+to modify other rulesets.
 
 ## Trust boundaries
 
