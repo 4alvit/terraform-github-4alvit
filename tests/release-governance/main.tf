@@ -19,7 +19,7 @@ variable "github_organization" {
 # with the same mocked provider; this fixture has no cloud backend or credentials.
 module "repos" {
   for_each    = toset(["terraform_github_ha_homelab"])
-  source      = "./modules/github_repo"
+  source      = "../../modules/github_repo"
   name        = "terraform-github-ha-homelab"
   description = "Mocked review-policy fixture"
 }
