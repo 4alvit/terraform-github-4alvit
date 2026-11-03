@@ -1,6 +1,24 @@
 # These new public repositories belong only to the canonical top-level state.
 # Do not include them in the live-data public/release sets before creation.
 locals {
+  # Each opted-in product must emit these Actions jobs for every PR, including docs.
+  # CI gate in Travel requires every native acceptance group; CodeQL is added below.
+  ios_product_required_action_checks = {
+    document-sanitizer-ios = [
+      "macOS core, independent export corpus, iOS build",
+      "Russian iPad privacy at system AX5",
+      "Native StoreKit eight-case acceptance",
+      "Exact packaged Release share smoke",
+      "analyze / CodeQL Analysis",
+      "Swift security analysis",
+    ]
+    travel-documents-ios = [
+      "CI gate",
+      "analyze / CodeQL Analysis",
+      "Swift security analysis",
+    ]
+  }
+
   ios_product_repositories = {
     room-inventory-ios = {
       description = "Local-first iOS room inventory with confirmed OCR suggestions, document attachments, and portable exports"
@@ -95,10 +113,10 @@ resource "github_repository_ruleset" "ios_products_default" {
     deletion            = true
     non_fast_forward    = true
     required_signatures = true
-    # This product's existing acceptance and source analyses must pass before merge.
-    # Keep the other active iOS repository policies unchanged.
+    # Require the existing acceptance and source analyses for qualified products.
+    # Products absent from the map retain their current policies.
     dynamic "required_status_checks" {
-      for_each = each.key == "document-sanitizer-ios" ? [true] : []
+      for_each = contains(keys(local.ios_product_required_action_checks), each.key) ? [true] : []
       content {
         strict_required_status_checks_policy = true
         do_not_enforce_on_create             = false
@@ -107,14 +125,7 @@ resource "github_repository_ruleset" "ios_products_default" {
           integration_id = 57789
         }
         dynamic "required_check" {
-          for_each = toset([
-            "macOS core, independent export corpus, iOS build",
-            "Russian iPad privacy at system AX5",
-            "Native StoreKit eight-case acceptance",
-            "Exact packaged Release share smoke",
-            "analyze / CodeQL Analysis",
-            "Swift security analysis",
-          ])
+          for_each = toset(local.ios_product_required_action_checks[each.key])
           content {
             context        = required_check.value
             integration_id = 15368
