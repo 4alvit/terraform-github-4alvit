@@ -1,7 +1,8 @@
 # Independent repository stack
 
 This Terraform root owns the repository declared in its configuration,
-vulnerability alerts, Dependabot security updates, workflow permissions and its CI routing variables.
+vulnerability alerts, the explicitly disabled Dependabot security-update setting,
+workflow permissions and its CI routing variables.
 It has a separate backend and must remain the sole state owner of those objects.
 It neither imports nor changes the top-level canonical state.
 

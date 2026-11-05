@@ -23,8 +23,8 @@ Stop for unrelated changes. Do not apply an isolated empty-state plan.
 
 Each repository is public, seeded with an MIT license, and uses `main` as its
 default branch. The declaration enables secret scanning and push protection,
-vulnerability alerts, Dependabot security updates, and read-only default workflow
-tokens. Actions may submit approvals under explicitly granted job permissions.
+vulnerability alerts and read-only default workflow tokens. Dependabot security-update
+PRs are explicitly disabled in favor of Renovate. Actions may submit approvals under explicitly granted job permissions.
 The existing approved automation account receives Write access; verify its
 accepted access before relying on it as reviewer.
 

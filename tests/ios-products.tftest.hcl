@@ -94,9 +94,13 @@ run "bootstrap_scope_and_protections" {
     error_message = "Default workflow tokens must be read-only while allowing explicit approval jobs."
   }
   assert {
-    condition = length(github_repository_vulnerability_alerts.ios_products) == 3 && alltrue([
-      for update in github_repository_dependabot_security_updates.ios_products : !update.enabled
-    ])
+    condition = (
+      length(github_repository_vulnerability_alerts.ios_products) == 3 &&
+      toset(keys(github_repository_dependabot_security_updates.ios_products)) == toset(keys(module.ios_products)) &&
+      alltrue([
+        for update in github_repository_dependabot_security_updates.ios_products : !update.enabled
+      ])
+    )
     error_message = "Every new repository must retain vulnerability alerts while Renovate owns security updates."
   }
   assert {

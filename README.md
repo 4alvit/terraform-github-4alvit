@@ -84,7 +84,7 @@ coverage. Reconcile authorized live inventory with each state before adoption.
 
 ### Security (per repository)
 - Vulnerability alerts (`github_repository_vulnerability_alerts`)
-- Dependabot security updates (`github_repository_dependabot_security_updates`)
+- Disabled Dependabot security-update setting (`github_repository_dependabot_security_updates`); Renovate owns update PRs
 
 ### Merged-branch cleanup
 
