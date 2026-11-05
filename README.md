@@ -167,3 +167,13 @@ the plan and keep unrelated infrastructure changes outside this adoption.
 ## Owner branch bypass
 
 The account owner `4alvit` has [permanent branch bypass](docs/public-security.md#emergency-owner-merges), including direct pushes and history repair. Review and CI requirements continue to apply to other actors. Tag protections and deployment approvals are unchanged. Terraform must be applied to the canonical state and live rules verified before relying on the grant.
+
+## Dependency updater cutover
+
+Before applying disabled Dependabot security-update settings, merge the shared
+Renovate fleet preset and each affected repository's configuration, then verify
+that the appropriate runner processes those repositories. Confirm application
+update coverage as well as CI updates, including each project's documented
+manual procedures for source-bound locks, exports or compatibility holds.
+Keep vulnerability alerts enabled where configured. A CI-only Renovate preset
+is not sufficient evidence for disabling the previous application updater.
