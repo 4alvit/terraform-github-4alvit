@@ -100,14 +100,6 @@ creates no rulesets and imports no resources. This source change also covers
 `github_repository_ruleset.default["4alvit"]`, whose previous source would
 otherwise restore stale-approval dismissal to `false`.
 
-GitHub separately rejected the profile repository's Gitar Bot bypass because the
-app is not part of that ruleset's source or owner. The profile source therefore
-excludes only that confirmed invalid app exception; its administrator bypass and
-one-review requirement remain unchanged. This source correction does not itself
-apply the live repair. A separate guarded update must verify the exact current
-body and its own recorded rejection before removing that app exception. It does
-not authorize removing valid or unverified app exceptions in other repositories.
-
 Routine reconciliation preserves existing administrator exceptions. The three
 mandatory existing rulesets above enforce their reviews without a separate
 rollout selection. For the broader `public_review` rollout, select repositories

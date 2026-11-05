@@ -493,10 +493,6 @@ resource "github_repository_pages" "iot_project_builder_profile" {
   }
 }
 
-data "github_app" "gitar" {
-  slug = "gitar-bot"
-}
-
 locals {
   protected_repo_names = [
     "energy-data-rag-pipeline",
@@ -526,17 +522,6 @@ resource "github_repository_ruleset" "default" {
     content {
       actor_id    = 5
       actor_type  = "RepositoryRole"
-      bypass_mode = "always"
-    }
-  }
-
-  # Preserve existing actor grants when importing the two manually created rulesets.
-  # GitHub confirmed that Gitar is not a valid bypass actor for the 4alvit profile.
-  dynamic "bypass_actors" {
-    for_each = (contains(local.active_public_software_repositories, each.value) || contains(["4alvit", "iot-project-builder-profile", "terraform-github-open-ott-play"], each.value)) ? [] : [data.github_app.gitar.id]
-    content {
-      actor_id    = bypass_actors.value
-      actor_type  = "Integration"
       bypass_mode = "always"
     }
   }
