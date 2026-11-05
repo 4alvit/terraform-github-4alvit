@@ -125,8 +125,7 @@ resources into a second state.
 
 `CI gate` is bound to GitHub Actions (App 15368). `release_external_checks` keeps
 CodeQL, SonarCloud and other always-present security contexts bound to their
-observed GitHub App IDs. Conditional Gitar checks are not made permanently required;
-repositories using them retain the legacy merger's wait for observed checks.
+observed GitHub App IDs.
 
 `workflow_pin_repositories` protects `workflow-pins/*` tags from deletion or updates.
 These tags retain reviewed reusable workflow commits. Create a new tag for a new
