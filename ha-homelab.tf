@@ -4,7 +4,7 @@ resource "github_repository_vulnerability_alerts" "ha_homelab_infrastructure" {
 
 resource "github_repository_dependabot_security_updates" "ha_homelab_infrastructure" {
   repository = module.repos["terraform_github_ha_homelab"].repository.id
-  enabled    = true
+  enabled    = false
 }
 
 resource "github_repository_ruleset" "ha_homelab_infrastructure" {

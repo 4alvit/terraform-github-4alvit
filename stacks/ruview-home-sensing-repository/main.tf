@@ -66,7 +66,7 @@ resource "github_workflow_repository_permissions" "ruview" {
 
 resource "github_repository_dependabot_security_updates" "ruview" {
   repository = github_repository.ruview.id
-  enabled    = true
+  enabled    = false
   depends_on = [github_repository_vulnerability_alerts.ruview]
 }
 

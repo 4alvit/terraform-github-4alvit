@@ -95,9 +95,9 @@ run "bootstrap_scope_and_protections" {
   }
   assert {
     condition = length(github_repository_vulnerability_alerts.ios_products) == 3 && alltrue([
-      for update in github_repository_dependabot_security_updates.ios_products : update.enabled
+      for update in github_repository_dependabot_security_updates.ios_products : !update.enabled
     ])
-    error_message = "Every new repository must have vulnerability alerts and security updates."
+    error_message = "Every new repository must retain vulnerability alerts while Renovate owns security updates."
   }
   assert {
     condition = alltrue([

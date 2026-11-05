@@ -58,7 +58,7 @@ resource "github_repository_vulnerability_alerts" "harness" {
 
 resource "github_repository_dependabot_security_updates" "harness" {
   repository = github_repository.harness.id
-  enabled    = true
+  enabled    = false
   depends_on = [github_repository_vulnerability_alerts.harness]
 }
 
