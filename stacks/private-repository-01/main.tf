@@ -65,7 +65,7 @@ resource "github_repository_vulnerability_alerts" "atlas" {
 
 resource "github_repository_dependabot_security_updates" "atlas" {
   repository = github_repository.atlas.id
-  enabled    = true
+  enabled    = false
   depends_on = [github_repository_vulnerability_alerts.atlas]
 }
 
