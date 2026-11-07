@@ -138,15 +138,6 @@ locals {
       topics           = ["mcp", "python", "robinhood"]
     },
 
-    demo = {
-      name             = "demo"
-      description      = "Private Graphify indexing sandbox"
-      visibility       = "private"
-      has_wiki         = false
-      license_template = ""
-      topics           = ["graphify"]
-    },
-
     terraform_github_4alvit = {
       name        = "terraform-github-4alvit"
       description = "Terraform IaC for 4alvit personal GitHub account infrastructure"
@@ -179,16 +170,6 @@ locals {
         "github", "hcp-terraform", "iac", "infrastructure-as-code",
         "open-ott-play", "terraform"
       ]
-    },
-
-    home_assistant = {
-      name             = "home-assistant"
-      description      = "Home Assistant configuration"
-      visibility       = "private"
-      has_wiki         = false
-      allow_auto_merge = false
-      license_template = ""
-      topics           = ["home-assistant", "home-automation", "yaml"]
     },
 
     home_assistant_k3s = {
