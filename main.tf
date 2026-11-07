@@ -388,82 +388,82 @@ resource "github_repository_vulnerability_alerts" "google_home_voice_stats" {
 
 resource "github_repository_dependabot_security_updates" "energy_data_rag_pipeline" {
   repository = module.repos["energy_data_rag_pipeline"].repository.id
-  enabled    = true
+  enabled    = false
 }
 
 resource "github_repository_dependabot_security_updates" "mcp_venus_os" {
   repository = module.repos["mcp_venus_os"].repository.id
-  enabled    = true
+  enabled    = false
 }
 
 resource "github_repository_dependabot_security_updates" "solar_forecast_langgraph" {
   repository = module.repos["solar_forecast_langgraph"].repository.id
-  enabled    = true
+  enabled    = false
 }
 
 resource "github_repository_dependabot_security_updates" "mqtt_observability_opentelemetry" {
   repository = module.repos["mqtt_observability_opentelemetry"].repository.id
-  enabled    = true
+  enabled    = false
 }
 
 resource "github_repository_dependabot_security_updates" "esphome_ble_sensor_patterns" {
   repository = module.repos["esphome_ble_sensor_patterns"].repository.id
-  enabled    = true
+  enabled    = false
 }
 
 resource "github_repository_dependabot_security_updates" "fastapi_mqtt_gateway" {
   repository = module.repos["fastapi_mqtt_gateway"].repository.id
-  enabled    = true
+  enabled    = false
 }
 
 resource "github_repository_dependabot_security_updates" "dbus_service_template" {
   repository = module.repos["dbus_service_template"].repository.id
-  enabled    = true
+  enabled    = false
 }
 
 resource "github_repository_dependabot_security_updates" "terraform_github_4alvit" {
   repository = module.repos["terraform_github_4alvit"].repository.id
-  enabled    = true
+  enabled    = false
 }
 
 resource "github_repository_dependabot_security_updates" "iot_project_builder_profile" {
   repository = module.repos["iot_project_builder_profile"].repository.id
-  enabled    = true
+  enabled    = false
 }
 
 resource "github_repository_dependabot_security_updates" "k3s_self_healing" {
   repository = module.repos["k3s_self_healing"].repository.id
-  enabled    = true
+  enabled    = false
 }
 
 resource "github_repository_dependabot_security_updates" "github_deploy_webhook" {
   repository = module.repos["github_deploy_webhook"].repository.id
-  enabled    = true
+  enabled    = false
 }
 
 resource "github_repository_dependabot_security_updates" "terraform_oracle_oci" {
   repository = module.repos["terraform_oracle_oci"].repository.id
-  enabled    = true
+  enabled    = false
 }
 
 resource "github_repository_dependabot_security_updates" "terraform_cloudflare_alvit" {
   repository = module.repos["terraform_cloudflare_alvit"].repository.id
-  enabled    = true
+  enabled    = false
 }
 
 resource "github_repository_dependabot_security_updates" "home_assistant_k3s" {
   repository = module.repos["home_assistant_k3s"].repository.id
-  enabled    = true
+  enabled    = false
 }
 
 resource "github_repository_dependabot_security_updates" "amazon_echo_home_voice" {
   repository = module.repos["amazon_echo_home_voice"].repository.id
-  enabled    = true
+  enabled    = false
 }
 
 resource "github_repository_dependabot_security_updates" "google_home_voice_stats" {
   repository = module.repos["google_home_voice_stats"].repository.id
-  enabled    = true
+  enabled    = false
 }
 
 resource "github_repository_pages" "iot_project_builder_profile" {
@@ -472,10 +472,6 @@ resource "github_repository_pages" "iot_project_builder_profile" {
     branch = "main"
     path   = "/docs"
   }
-}
-
-data "github_app" "gitar" {
-  slug = "gitar-bot"
 }
 
 locals {
@@ -507,17 +503,6 @@ resource "github_repository_ruleset" "default" {
     content {
       actor_id    = 5
       actor_type  = "RepositoryRole"
-      bypass_mode = "always"
-    }
-  }
-
-  # Preserve existing actor grants when importing the two manually created rulesets.
-  # GitHub confirmed that Gitar is not a valid bypass actor for the 4alvit profile.
-  dynamic "bypass_actors" {
-    for_each = (contains(local.active_public_software_repositories, each.value) || contains(["4alvit", "iot-project-builder-profile", "terraform-github-open-ott-play"], each.value)) ? [] : [data.github_app.gitar.id]
-    content {
-      actor_id    = bypass_actors.value
-      actor_type  = "Integration"
       bypass_mode = "always"
     }
   }

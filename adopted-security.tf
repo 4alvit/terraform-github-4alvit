@@ -9,7 +9,7 @@ resource "github_repository_vulnerability_alerts" "adopted" {
 resource "github_repository_dependabot_security_updates" "adopted" {
   for_each   = local.adopted_security_repositories
   repository = each.value
-  enabled    = true
+  enabled    = false
 }
 import {
   for_each = local.adopted_security_repositories

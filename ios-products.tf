@@ -68,7 +68,7 @@ resource "github_repository_vulnerability_alerts" "ios_products" {
 resource "github_repository_dependabot_security_updates" "ios_products" {
   for_each   = local.ios_product_repositories
   repository = module.ios_products[each.key].repository.name
-  enabled    = true
+  enabled    = false
   depends_on = [github_repository_vulnerability_alerts.ios_products]
 }
 

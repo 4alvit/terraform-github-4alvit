@@ -14,7 +14,7 @@ import {
 
 resource "github_repository_dependabot_security_updates" "alvit_meet" {
   repository = module.repos["alvit_meet"].repository.id
-  enabled    = true
+  enabled    = false
 }
 
 import {

@@ -58,7 +58,7 @@ resource "github_repository_vulnerability_alerts" "alvit" {
 
 resource "github_repository_dependabot_security_updates" "alvit" {
   repository = github_repository.alvit.id
-  enabled    = true
+  enabled    = false
   depends_on = [github_repository_vulnerability_alerts.alvit]
 }
 
