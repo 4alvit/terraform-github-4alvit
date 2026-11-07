@@ -5,22 +5,12 @@ import {
   id = "terraform-github-open-ott-play"
 }
 
-import {
-  to = module.repos["home_assistant"].github_repository.this
-  id = "home-assistant"
-}
-
 # Existing active write grants: import membership instead of issuing invitations.
-# The owner explicitly approved these three private-repository review grants.
+# The owner explicitly approved these private-repository review grants.
 # Personal repositories support collaborator write access, not a read-only role.
 import {
   to = github_repository_collaborator.automation_bot["alvit-meet"]
   id = "alvit-meet:californiantiramisu"
-}
-
-import {
-  to = github_repository_collaborator.automation_bot["home-assistant"]
-  id = "home-assistant:californiantiramisu"
 }
 
 import {
@@ -41,11 +31,6 @@ import {
 import {
   to = github_repository_collaborator.automation_bot["dbus-service-template"]
   id = "dbus-service-template:californiantiramisu"
-}
-
-import {
-  to = github_repository_collaborator.automation_bot["demo"]
-  id = "demo:californiantiramisu"
 }
 
 import {

@@ -153,9 +153,9 @@ The [disclosed secure-provider profile](docs/SECURE_PROVIDER.md) builds a review
 ### Explicit private-repository reviewer grants
 
 The owner approved `californiantiramisu` collaborator access only to
-`house-fiber-atlas`, `alvit-meet` and `home-assistant` for the remaining private
+`house-fiber-atlas` and `alvit-meet` for the remaining private
 runner review PRs. The existing `automation_bot` resource records `push` access
-for those three repositories, and explicit import blocks adopt the already
+for those repositories, and explicit import blocks adopt the already
 accepted invitations. This change neither creates repositories nor grants
 organization membership, administration, or access to additional repositories.
 

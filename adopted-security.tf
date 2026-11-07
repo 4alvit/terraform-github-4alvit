@@ -1,6 +1,6 @@
 # Preserve and adopt the enabled security settings on existing repositories.
 locals {
-  adopted_security_repositories = toset(["4alvit", "demo", "home-assistant", "terraform-github-open-ott-play", "terraform-github-victron", "terraform-portainer-synology", "terraform-synology-alvit"])
+  adopted_security_repositories = toset(["4alvit", "terraform-github-open-ott-play", "terraform-github-victron", "terraform-portainer-synology", "terraform-synology-alvit"])
 }
 resource "github_repository_vulnerability_alerts" "adopted" {
   for_each   = local.adopted_security_repositories
