@@ -28,3 +28,4 @@ __pycache__/
 
 # Saved plans can contain sensitive values.
 *.tfplan
+A*S.md
